@@ -1,5 +1,7 @@
 from main import espace
 ant1 = (0,0)
+ant2 = (4,11)
+ant3 = (11,11)
 
 
 def get_cellule(world, tuple):
@@ -10,27 +12,22 @@ def get_cellule(world, tuple):
         "up": (1,0)
         }
     
-    res=[]
+    interdiction=[]
     if tuple[0] == 0:
-        res.append(choices["up"])
-        pass 
+        interdiction.append(choices["up"])
     if tuple[0] == len(world[0]) - 1 :
-        res.appen(choices[ "down"])
-        pass 
+        interdiction.append(choices[ "down"])
     if tuple[1] == 0 :
-        res.append(choices["left"])
-        pass 
+        interdiction.append(choices["left"])
     if tuple[1] == len(world[0]) - 1:
-        res.append(choices["right"])
-        pass 
+        interdiction.append(choices["right"])
 
-    possibilite = []
-    for el in res :
-        print(el)
-        if el not in choices:
-            print("recup")
-            possibilite.append(el)
-        
-    print("res : ", possibilite)
+    possibility = []
+    for el in choices:
+        if choices[el] not in interdiction:
+            possibility.append(choices[el])
+    print("possibility : ", possibility)
 
 get_cellule(espace,ant1 )
+get_cellule(espace,ant2 )
+get_cellule(espace,ant3 )
