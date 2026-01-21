@@ -10,7 +10,9 @@ On retrouve différents ``fichiers sources`` :
 - [``move``]() : fichier qui simule les déplacements aléatoires des fourmies sur la map choisie
 
 ## Processus de la simulation 
-Vous disposez de `plusieurs maps `monde à votre guise, à vous de choisir celle qui vous convient selon leur `typographie` que ce soit par rapports aux obstacles qu'elle présente, la taille de la carte etc... <br><br> Les fourmies commencent la simulation en sortant de leur nid. Elles ont alors la possiblité des créer des chemins pour 
+Vous disposez de `plusieurs maps `monde à votre guise, à vous de choisir celle qui vous convient selon leur `typographie` que ce soit par rapports aux obstacles qu'elle présente, la taille de la carte etc... 
+
+Les fourmies commencent la simulation en sortant de leur nid. Elles ont alors la possiblité des créer des chemins pour 
 
 
 
