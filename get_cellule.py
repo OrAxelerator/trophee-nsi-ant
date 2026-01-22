@@ -24,7 +24,7 @@ def get_cellule(world, tuple):
 
     possibility = []
     for el in choices:
-        if choices[el] not in interdiction:
+        if choices[el] != "X" and not in interdiction:
             possibility.append(choices[el])
     return possibility
 
