@@ -20,8 +20,8 @@ def food(possibility, ant):
 
         if espace[y][x] == "f":
              #ant1 = ( ant1[0] + possibility[0[0]], ant1[1] + possibility[0[1]] )
-             
-            return True 
+             print("azertyuiop^qsdfghjklmwxcvbn")
+        return True 
 
 
 food(possi, ant1)
