@@ -1,5 +1,6 @@
 import random
 from world import espace, LARGEUR, HAUTEUR
+from draw import draw
 
 position_fourmi = [0, 6]
 
@@ -11,16 +12,13 @@ def avancer(p):
 def droite(p):
     return  [p[0] + 1, p[1] + 1]
 
-def gauche (p):
+def gauche(p):
     return  [p[0] + 1, p[1] - 1]
 
 def pos_ok(p):
     return 0<=p[0]<LARGEUR and 0<=p[1]<HAUTEUR
 
-def afficher(e):
-    for l in e:
-        print(l)
-    print("============")
+
 
 
 for loop in range(20):
@@ -38,7 +36,8 @@ for loop in range(20):
             espace[position_fourmi[0]][position_fourmi[1]] = '👣'
             position_fourmi = gauche(position_fourmi)
     espace[position_fourmi[0]][position_fourmi[1]] = '🐜'
-    afficher(espace)
+    draw(espace)
+    print("============")
     input("...")
 
 
