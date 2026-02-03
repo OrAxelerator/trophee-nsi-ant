@@ -23,7 +23,7 @@ def init_ant():
     return forumi_array
     
 ant_array = init_ant()
-print(ant_array)
+
 
 #print(init_ant())
 
