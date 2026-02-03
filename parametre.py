@@ -17,7 +17,7 @@ def init_ant():
     forumi_array = []
     for i in range(nb_ant):
         forumi_array.append({
-        "pos" : (0,0), # mettre x, y fourmilière
+        "pos" : [0,0], # mettre x, y fourmilière
         "angle" : (random.randint(-1, 1), random.randint(-1, 1)),  # Si fourmilere dans coins ou proche d'obstace : prob, use get_cellule
         "have_food" : False
         })

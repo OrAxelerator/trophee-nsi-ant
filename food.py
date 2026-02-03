@@ -8,7 +8,7 @@ ant1 = { # exemple
     "angle" : (0,1),
     "have_food" : False
 }
-possi = get_cellule(espace, ant1)
+#possi = get_cellule(espace, ant1)
 
 #print(possi) #test
 def food(possibility, ant) -> tuple | bool:
@@ -17,7 +17,7 @@ def food(possibility, ant) -> tuple | bool:
     Sinon renvoi la position de la nourriture en tupple
     """
     for choix in possibility :
-        print(read_world(ant, choix))
+        #print(read_world(ant, choix))
         if read_world(ant, choix) == "f":
             print("Food Food Food")
             ant["have_food"] = True
@@ -27,4 +27,4 @@ def food(possibility, ant) -> tuple | bool:
 
 
 
-print(food(possi, ant1)) #test$
+#print(food(possi, ant1)) #test$
