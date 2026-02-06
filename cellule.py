@@ -56,4 +56,4 @@ def get_cellule(world, ant: dict) -> list:
     return possibility
 
 
-print(get_cellule(espace, ant)) #test
+#print(get_cellule(espace, ant)) #test
