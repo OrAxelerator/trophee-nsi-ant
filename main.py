@@ -6,21 +6,26 @@ import read_world
 from chose2_0 import think
 
 from parametre import ant_array
-print(ant_array)
 from chose_cellule import choose
 from food import food
-
+ant1 = {
+    "pos" : [0,0],
+    "angle" : (0,1),
+    "have_food": False
+}
+#ant_array = [ant1]#TEST
+print(ant_array)
 
 
 def move(choix:tuple, ant:dict):
-    print("choix : ", choix)
-    print(ant)
+    print("choix de move() : ", choix)
     #print("ant[pos] : ", ant["pos"])
     pheromones(espace, ant)
     #espace[ant["pos"][0]][ant1[1]] = 0
     #espace[ant1["pos"][0]][ant1["pos"][1]] += 1
     ant["pos"][0] += choix[0] 
-    ant["pos"][1] += choix[0]
+    ant["pos"][1] += choix[1]
+    print("angle : ", ant["angle"])
 
 def pheromones(espace, ant:dict):
     """pose phéromones a la position de la fourmi avant son déplacement
