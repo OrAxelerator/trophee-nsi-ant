@@ -4,6 +4,7 @@ from world import espace, LARGEUR, HAUTEUR
 from draw import draw
 import read_world
 from chose2_0 import think
+from unlock import unblock
 
 from parametre import ant_array
 from chose_cellule import choose
@@ -31,7 +32,9 @@ def pheromones(espace, ant:dict):
     """pose phéromones a la position de la fourmi avant son déplacement
     seulement si elle a de la nourriture"""
     if ant["have_food"]:
-        espace[ant["pos"][0]][ant["pos"][1]] += 1 
+        print("pos :", espace[ant["pos"][0]][ant["pos"][1]])
+        if espace[ant["pos"][0]][ant["pos"][1]] != "f" :
+            espace[ant["pos"][0]][ant["pos"][1]] += 1 
 
 print("LANCEMENT =========================================================================== ")
 while True:
@@ -39,6 +42,10 @@ while True:
     for ant in ant_array:
         print("--------------------------------------------------------------------")
         choix = get_cellule(espace,ant) # choix "légal"
+        if choix == [] :
+            ant["angle"] = unblock(espace, ant)
+            choix = get_cellule(espace,ant)
+
         print("tout les choix", choix)
         brain_fourmi = think(choix, ant)
         print("brain : ", brain_fourmi)#devrait sortir que 1 ELEMENT
@@ -52,7 +59,7 @@ while True:
         #    dir = choose(choix, ant)
         #    print(dir)
         #    move(dir, ant)
-    draw(espace)
+    draw(espace, ant_array)
     print("----------------")
         #move(choix, ant)
         #espace[ant["pos"][0]][ant["pos"][1]] = "F"
