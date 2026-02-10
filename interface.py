@@ -1,6 +1,6 @@
 #from world.random_map import random_map
 
-from simulation.draw import draw
+from draw import draw
 from random_map import random_map
 map_choosen = []
 
