@@ -3,6 +3,7 @@ from world import espace
 from read_world import read_world
 
 
+
 ant1 = {
     "pos" : [0,11],
     "angle" : (1,0),
@@ -48,20 +49,34 @@ def unblock(espace, ant):
             
     print("res: ", res)
     phero = []
+    posi_angle = []
+
     for i, el in enumerate(res) : #
         #ant["angle"] = el
         #Choix = get_cellule(espace, ant)
         #phero.append((ant["pos"], (el))
         val = read_world(ant, el, espace)
-        if val == "X":
+        if val == "X" :
             pass
-        else:
+
+        if ant["have_food"] == True :
+            if val == "f":
+                val = 1
             phero.append(val)
+            angle = res[phero.index(max(phero))]
+            print("res de la mort, ",angle)
+            return angle
+        
+        if ant["have_food"] == False :
+            if val == "f":
+                posi_angle.append(val)
+                print("res de la mort 1, ",posi_angle)
+            return posi_angle
+
+
 
     #print("phero : ", phero)
-    angle = res[phero.index(max(phero))]
-    print("res de la mort, ",angle)
-    return angle
+    
         
         #print("+1 dans possi")
        # possie.append((think2(Choix, ant), ant["angle"])) # ((choix[0][0], poids[0][1]), angle[1])
