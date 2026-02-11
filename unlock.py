@@ -49,7 +49,7 @@ def unblock(espace, ant):
             
     print("res: ", res)
     phero = []
-    posi_angle = []
+    angle = []
 
     for i, el in enumerate(res) : #
         #ant["angle"] = el
@@ -69,9 +69,13 @@ def unblock(espace, ant):
         
         if ant["have_food"] == False :
             if val == "f":
-                posi_angle.append(val)
-                print("res de la mort 1, ",posi_angle)
-            return posi_angle
+                angle.append(val)
+                print("res de la mort 1, ",angle)
+                return angle
+            else :
+                phero.append(val)
+                angle = res[phero.index(max(phero))]
+                return angle
 
 
 
