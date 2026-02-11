@@ -1,5 +1,3 @@
-
-
 const food = document.getElementById("food")
 const obstacle = document.getElementById("obstacle")
 const path = document.getElementById("path")
@@ -97,8 +95,8 @@ function changeCellule(cel, activeMode){
 function createMap(y, x){
     map.innerHTML = ""
     if (y == 0 && x == 0 || typeof Number(y) === NaN  || typeof Number(x) === NaN || x === "de"){ 
-        x = 1;
-        y = 1;
+        x = 3;
+        y = 3;
     }
     for (let i=0;i < y; i++){
         row = document.createElement("div")
@@ -118,10 +116,6 @@ function createMap(y, x){
 createMapHtml.addEventListener("click", () => {
     createMap(xInput.value, yInput.value)
 
-
-
-    
-    
     let cellule = document.querySelectorAll(".cellule")
     cellule.forEach(el => {
         el.addEventListener("click", () => {
@@ -135,7 +129,11 @@ createMapHtml.addEventListener("click", () => {
 
 function saveMap(){
     let MAP = {
-    "map_de_la_mort" : []
+    "map" : [],
+    "width":"",
+    "height":"",
+    "hill":"",
+    "name":""
 }
     console.log(map)
     let rows =  map.querySelectorAll(".row")
@@ -146,10 +144,11 @@ function saveMap(){
         rowsJson = []
         //for (let j = 0; j < rows.length; j++){
         allCelluleOfRow = rows[i].querySelectorAll(".cellule")
+        let j = 0
         allCelluleOfRow.forEach(cel => {
-                console.log(cel);
-                let value // valeur a ajouté
-                console.log(cel.classList.value);
+            console.log(cel);
+            let value // valeur a ajouté
+            console.log(cel.classList.value);
                 if (cel.classList.value === "cellule path"){
                     value = 1
                 }if (cel.classList.value === "cellule obstacle"){
@@ -157,28 +156,22 @@ function saveMap(){
                 }if (cel.classList.value === "cellule food"){
                     value = "f"
                 }if (cel.classList.value === "cellule hill"){
-                    value = "h" // h pour home
+                    value = "h"; // h pour home
+                    MAP["hill"] = [i, j]; // y,x
                 }
-                rowsJson.push(value)
+                rowsJson.push(value);
+                j += 1;
         })
-            //}
-        MAP["map_de_la_mort"].push(rowsJson)
+        MAP["map"].push(rowsJson); // "map" change jamais
+        MAP["width"] = allCelluleOfRow.length;
+        MAP["height"] = rows.length;
+        MAP["name"] = nameMap.value // si vide alors custom=custom_map
+
         }
         console.log(MAP);
         let dl = document.createElement('a')
-        
         dl.download = nameMap.value+'.json' // target filename
         dl.href = `data:application/json;charset=utf-8,${JSON.stringify(MAP)}`
         dl.click()
 }
 
-
-
-let MAP = {
-    "custom_map" : []
-}
-
-
-
-//let btn = [food, obstacle, effacer]
-//food.addEventListener("click", () => el)
