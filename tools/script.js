@@ -18,50 +18,19 @@ save.addEventListener("click", () => {
 
 let activeMode = "path"
 
-food.addEventListener("click", () => {
-    btn.forEach(el => {
-        if (el === food){
-            el.classList = "on"
-        }else{
-            el.classList = ""
-        }
+btn.forEach(el => { //pour tout les btn s'occupe de listener et de affichage
+    el.addEventListener("click", () => {
+        btn.forEach(style => {
+            if (style == el){
+                el.classList.add("on")
+                activeMode = el.id; 
+            }else {
+                style.classList.remove("on")
+            }
+        });
     })
-    activeMode = "food"
-})  
+});
 
-obstacle.addEventListener("click", () => {
-        btn.forEach(el => {
-        if (el === obstacle){
-            el.classList = "on"
-        }else{
-            el.classList = ""
-        }
-    })
-    activeMode = "obstacle"
-})
-
-path.addEventListener("click", () => {
-        btn.forEach(el => {
-        if (el === path){
-            el.classList = "on"
-        }else{
-            el.classList = ""
-        }
-    })
-    activeMode = "path"
-})
-
-hill.addEventListener("click", () => {
-    
-        btn.forEach(el => {
-        if (el === hill){
-            el.classList = "on"
-        }else{
-            el.classList = ""
-        }
-    })
-    activeMode = "hill"
-})
 
 
 function changeCellule(cel, activeMode){
@@ -75,11 +44,8 @@ function changeCellule(cel, activeMode){
         }
         
     }if (activeMode === "path"){
-        if (cel.className == 'cellule path'){
-            cel.className = 'cellule obstacle' // inverse case
-        }else {
+
             cel.className = 'cellule path' // met case a obstacle
-        }
     }if (activeMode === "food"){
         if (cel.className == 'cellule food'){
             cel.className = 'cellule path'
@@ -87,14 +53,22 @@ function changeCellule(cel, activeMode){
             cel.className = 'cellule food'
         }
     }if (activeMode === "hill"){
-        cel.className = 'cellule hill' 
+        
+        if ( cel.className === 'cellule hill'){
+            
+            cel.className = 'cellule path'
+        
+        }
+        else {
+            cel.className = 'cellule hill' 
+        }
     }
 }
 
 
 function createMap(y, x){
     map.innerHTML = ""
-    if (y == 0 && x == 0 || typeof Number(y) === NaN  || typeof Number(x) === NaN || x === "de"){ 
+    if (y == 0 && x == 0 || typeof Number(y) === NaN  || typeof Number(x) === NaN || x === ""){ 
         x = 3;
         y = 3;
     }
@@ -113,6 +87,16 @@ function createMap(y, x){
 }
 
 
+let isMouseDown = false;
+document.addEventListener("mousedown", () => {
+    isMouseDown = true;
+    console.log(isMouseDown);
+});
+
+document.addEventListener("mouseup", () => {
+    isMouseDown = false;
+});
+
 createMapHtml.addEventListener("click", () => {
     createMap(xInput.value, yInput.value)
 
@@ -122,12 +106,17 @@ createMapHtml.addEventListener("click", () => {
             console.log(el)
             changeCellule(el, activeMode);
         })
+        el.addEventListener("mouseover", () => {
+            if (isMouseDown) {
+                changeCellule(el, activeMode);
+            }
+    })
     })
 
 })
 
-
 function saveMap(){
+    have_hill = false
     let MAP = {
     "map" : [],
     "width":"",
@@ -135,12 +124,12 @@ function saveMap(){
     "hill":"",
     "name":""
 }
-    console.log(map)
+    //console.log(map)
     let rows =  map.querySelectorAll(".row")
-    console.log(rows.length)
+    //console.log(rows.length)
     for (let i = 0; i < rows.length; i ++){
-        console.log(rows[i]);
-        console.log(rows.length)
+        //console.log(rows[i]);
+        //console.log(rows.length)
         rowsJson = []
         //for (let j = 0; j < rows.length; j++){
         allCelluleOfRow = rows[i].querySelectorAll(".cellule")
@@ -148,16 +137,20 @@ function saveMap(){
         allCelluleOfRow.forEach(cel => {
             console.log(cel);
             let value // valeur a ajouté
-            console.log(cel.classList.value);
+            //console.log(cel.classList.value);
                 if (cel.classList.value === "cellule path"){
                     value = 1
                 }if (cel.classList.value === "cellule obstacle"){
                     value = "X"
                 }if (cel.classList.value === "cellule food"){
                     value = "f"
-                }if (cel.classList.value === "cellule hill"){
+                }if (cel.classList.value === "cellule hill" && have_hill === true){
+                    value = 1
+                }
+                if (cel.classList.value === "cellule hill" && have_hill === false){
                     value = "h"; // h pour home
                     MAP["hill"] = [i, j]; // y,x
+                    have_hill = true
                 }
                 rowsJson.push(value);
                 j += 1;
@@ -174,4 +167,3 @@ function saveMap(){
         dl.href = `data:application/json;charset=utf-8,${JSON.stringify(MAP)}`
         dl.click()
 }
-

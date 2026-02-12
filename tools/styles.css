@@ -1,40 +1,82 @@
+*{ box-sizing: border-box; }
+
+html,body{
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #E9F6E9;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
 
 
 button, input {
     padding: 5px;
-    background-color: rgb(135, 135, 135);
+    background-color: #FFF394;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 button:hover, input:hover {
-        background-color: rgb(112, 221, 112);
+        background-color: #fbe642;
     }
 
+.sidebar {
+    border-radius: 10px 10px 0px 0px;
+}
+.sidbareElement {
+    border-radius: 0px 0px 10px 10px;
+}
+
 .sidbareElement, .sidebar {
-    background-color: rgb(244, 100, 100);
+    background-color: #FFC53D;
+    padding-top: 2px;
     display: flex;
     width: 100%;
     justify-content:center;
+    gap: 10px;
+    padding: 10px;
     
+    
+}
+
+
+
+input {
+    width: 15%
 }
 input::placeholder {
     color: black;
     border: 2pix solid black
 
 }
+
 .e {
     background-color: rgb(0, 0, 0);
 }
+header {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    height: 11dvh;
+    z-index: 2;
+}
 
  main {
-        width: 100%;
-        height: 80dvh;
+    height: 100%;
+    width: 100%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    
+
         
     }
+
     #map {
         width: 80%;
         height: 100%;
-        background-color: rgba(86, 73, 54, 0.823);
+        background-color: #473b1fa8;
         display: flex;
         align-items: center;
         align-self: center;
@@ -42,36 +84,53 @@ input::placeholder {
         justify-self: center;
         flex-direction: column;
         border-radius: 15px;
+        cursor:cell;
 
+    }
+    bottom {
+        flex: 0 0 5%;
     }
     .row {
         display: flex;
         flex-direction: row;
     }
     .cellule {
+        border-radius: 2px; 
         width: 25px;
         pad: 13px;
         margin: 4px;
         height: 25px;
+        
     }
     .path {
         background-color: rgb(136, 211, 129);
     }
-    .obstacle {
-        background-color: rgb(0, 0, 0);
-    }
-    .food {
-        background-color:rgb(255, 0, 0);
-    }
-    .hill {
-        background-color: rgb(0, 41, 145);
-    }
+.obstacle {
+    background: linear-gradient(
+        135deg, 
+        rgba(91, 91, 91, 0.94) 0%, 
+        rgba(60, 60, 60, 0.94) 50%, 
+        rgba(40, 40, 40, 0.94) 100%
+    );
+}
+
+.food {
+    background: radial-gradient(
+        rgb(255, 120, 120) 0%, 
+        rgb(255, 0, 0) 60%, 
+        rgb(180, 0, 0) 100%
+    );
+    border-radius: 50%; 
+}
+.hill {
+    background: linear-gradient(to bottom, #B8865B, #8B4513);
+    border-radius: 4px;
+}
+
 
     .on {
-        background-color: rgb(22, 245, 22);
+        background-color: #fbe642;
     }
     
 
-    .off {
-        background-color: red;
-    }
+    
