@@ -1,0 +1,129 @@
+from flask import Flask, render_template, Response
+import time
+import json
+import os
+
+from load_world import get_map
+
+app = Flask(__name__)
+
+
+
+
+def move(choix:tuple, ant:dict):
+    print("choix de move() : ", choix)
+    ant["pos"][0] += choix[0] 
+    ant["pos"][1] += choix[1]
+
+import random
+from cellule import get_cellule
+from draw import draw
+from read_world import read_world
+from chose2_0 import think
+from unlock import unblock
+
+from chose_cellule import choose
+from backToHome2_0 import back_home
+from evap import evaporation
+
+def pheromones(espace, ant:dict, pose:int):
+    """pose phéromones a la position de la fourmi avant son déplacement
+    seulement si elle a de la nourriture"""
+    if ant["have_food"]:
+        print("pos :", espace[ant["pos"][0]][ant["pos"][1]])
+        if espace[ant["pos"][0]][ant["pos"][1]] not in ("f","h") :
+            espace[ant["pos"][0]][ant["pos"][1]] += pose
+
+
+
+
+mapdata = get_map()
+
+print("MAAAAAAAAAP", mapdata)
+print("MAAAAAAAAAP", mapdata["hill"])
+espace = mapdata["map"]
+hill = mapdata["hill"]
+
+def generer():
+    global CONFIG
+    ant_array = [
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+    ]
+    FOOD = 0
+    COEF = 6
+    tour = 1
+    taux = 0.2    
+    pose = 60
+
+    while True:
+        for ant in ant_array:
+            if ant["have_food"]:
+                print("🍔🍔🍔🍔🍔🍔")
+                if ant["pos"] != hill:
+                    nb_tour = 0 if read_world(ant, (0,0), espace) == "f" else 1
+                    print("BAHCHOMMMME")
+                    seq = [1,2]
+                    num = random.choice(seq)
+                    if num == 1 or nb_tour == 0:
+                        print("🧭🧭🧭🧭🧭🧭🧭🧭")
+                        back_Home = back_home(ant, hill, espace, nb_tour) 
+                        case = back_Home
+                    else:
+                        choix = get_cellule(espace, ant, "filtered")
+                        if choix == []:
+                            ant["angle"] = unblock(espace, ant)
+                        choix = get_cellule(espace, ant, "filtered")
+                        case = think(choix, ant, espace, COEF)
+                    move(case, ant) 
+                    pheromones(espace, ant, pose)
+                    if ant["pos"] == hill:
+                        FOOD +=1
+                        ant["have_food"] = False
+                        ant["angle"] = (-(ant["angle"][0]), -(ant["angle"][1]))
+                else:
+                    print("HIIIIIL:",hill)
+            else:
+                choix = get_cellule(espace, ant, "filtered")
+                if choix == []:
+                    ant["angle"] = unblock(espace, ant)
+                    choix = get_cellule(espace, ant, "filtered")
+                brain = think(choix, ant, espace, COEF)
+                move(brain, ant)
+        evaporation(espace, taux)
+        tour += 1
+        data = {
+            "ants": ant_array,
+            "map": espace,   # ⚠️ prends espace directement
+            "food": FOOD,
+            "tour": tour
+        }
+
+        yield f"data:{json.dumps(data)}\n\n"
+        time.sleep(0.2)
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/simulation")
+def simulation():
+    return render_template("simulation.html")
+
+@app.route("/stream")
+def stream():
+    print("STREAM APPELÉ 🔥")
+    return Response(generer(), mimetype="text/event-stream")
+
+if __name__ == "__main__":
+    app.run(debug=True)

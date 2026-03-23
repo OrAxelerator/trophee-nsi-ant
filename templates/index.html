@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ant Simulation</title>
+    <style>
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial;
+        }
+
+        .panel {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 18px;
+            background: orange;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🐜 Simulation Fourmis</h1>
+
+<div class="panel">
+    <label>
+        <input type="radio" name="type" value="random" checked>
+        Map aléatoire
+    </label>
+
+    <label>
+        <input type="radio" name="type" value="predef">
+        Map prédéfinie
+    </label>
+</div>
+
+<div id="randomOptions" class="panel">
+    Width: <input id="width" type="number" value="10"><br>
+    Height: <input id="height" type="number" value="10"><br>
+    Obstacles: <input id="obstacle" type="number" value="2"><br>
+    Path: <input id="path" type="number" value="5"><br>
+</div>
+
+<div id="predefOptions" class="panel" style="display:none;">
+    Map:
+    <select id="mapSelect"></select>
+</div>
+
+<div class="panel">
+    Nombre de fourmis:
+    <input id="nb_ant" type="number" value="5">
+</div>
+
+<button onclick="start()">🚀 Lancer</button>
+
+<hr>
+
+<pre id="output"></pre>
+
+<script>
+let source = null;
+
+// switch UI
+document.querySelectorAll("input[name='type']").forEach(r => {
+    r.addEventListener("change", () => {
+        const val = document.querySelector("input[name='type']:checked").value;
+
+        document.getElementById("randomOptions").style.display =
+            val === "random" ? "block" : "none";
+
+        document.getElementById("predefOptions").style.display =
+            val === "predef" ? "block" : "none";
+    });
+});
+
+// load maps
+fetch("/get_maps")
+.then(res => res.json())
+.then(data => {
+    const select = document.getElementById("mapSelect");
+    data.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = m;
+        select.appendChild(opt);
+    });
+});
+
+// start simulation
+function start() {
+    if (source) source.close();
+
+    const type = document.querySelector("input[name='type']:checked").value;
+
+    let payload = {
+        type: type,
+        nb_ant: parseInt(document.getElementById("nb_ant").value)
+    };
+
+    if (type === "random") {
+        payload.width = parseInt(document.getElementById("width").value);
+        payload.height = parseInt(document.getElementById("height").value);
+        payload.obstacle = parseInt(document.getElementById("obstacle").value);
+        payload.path = parseInt(document.getElementById("path").value);
+    } else {
+        payload.map_name = document.getElementById("mapSelect").value;
+    }
+
+    fetch("/start", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        source = new EventSource("/stream");
+
+        source.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            let txt = "Tour: " + data.tour + "\n";
+
+            data.ants.forEach(a => {
+                txt += "🐜 " + a.pos + "\n";
+            });
+
+            document.getElementById("output").textContent = txt;
+        };
+    });
+}
+</script>
+
+</body>
+</html>
