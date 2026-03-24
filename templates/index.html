@@ -3,11 +3,53 @@
 <head>
     <title>Ant Simulation</title>
     <style>
-        body {
-            background: #111;
-            color: white;
-            font-family: Arial;
-        }
+        * {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #675b40a8;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+:root {
+    --main-yellow : #fbea6a;
+    --active-yellow : #FFC53D;
+    --cellule-path-color:  #88D381;
+    --cellule-obstacle-color:   linear-gradient(135deg,
+            rgba(91, 91, 91, 0.94) 0%,
+            rgba(60, 60, 60, 0.94) 50%,
+            rgba(40, 40, 40, 0.94) 100%);
+    --cellule-food-color :radial-gradient(rgb(14, 156, 26) 0%,
+            rgb(50, 129, 8) 60%,
+            rgb(18, 124, 46) 100%);
+    --celleule-hill-color:linear-gradient(to bottom, #B8865B, #8B4513);
+}
+button,
+input {
+    padding: 5px;
+    background-color: var(--main-yellow);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#inputBox {
+    z-index: 3;
+  position: absolute;
+  background-color: var(--active-yellow);
+  padding: 2em;
+  border-radius: 15px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
 
         .panel {
             margin-bottom: 20px;
@@ -16,121 +58,195 @@
         button {
             padding: 10px;
             font-size: 18px;
-            background: orange;
+            background: rgb(225, 195, 0);
             border: none;
             cursor: pointer;
         }
+        .active {
+            background-color: var(--active-yellow);
+            
+        }
+        nav {
+            width: 90%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: row;
+        }
+        nav > div {
+            border-radius: 10px 10px 0px 0px;
+            background-color: var(--main-yellow);
+            border: 2px solid black;
+            width: 40%;
+            margin: 0 auto;
+            text-align: center;
+            cursor: pointer;
+            
+        }
+
+        form {
+            background-color: var(--main-yellow);
+            width: 90%;
+            margin: 0 auto;
+        }
+        #titre {
+            text-align: center;
+        }
+        #start {
+    background: linear-gradient(135deg, #ffd84d, #ffb700);
+    border-radius: 16px;
+    width: 220px;
+    margin: 40px auto 0 auto; 
+    padding: 1.2em 2em;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    display: block;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+#start:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+#start:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
     </style>
 </head>
 <body>
 
-<h1>🐜 Simulation Fourmis</h1>
+<h1 id="titre">🐜 Simulation Fourmis 🐜</h1>
 
-<div class="panel">
-    <label>
-        <input type="radio" name="type" value="random" checked>
-        Map aléatoire
-    </label>
 
-    <label>
-        <input type="radio" name="type" value="predef">
-        Map prédéfinie
-    </label>
-</div>
 
-<div id="randomOptions" class="panel">
-    Width: <input id="width" type="number" value="10"><br>
-    Height: <input id="height" type="number" value="10"><br>
-    Obstacles: <input id="obstacle" type="number" value="2"><br>
-    Path: <input id="path" type="number" value="5"><br>
-</div>
+<nav>
+    <div class="onglet active" id="presetMapOnglet">
+        preset
+    </div>
+    <div class="onglet" id="randomMapOnglet">
+        random
+    </div>
+</nav>
 
-<div id="predefOptions" class="panel" style="display:none;">
-    Map:
-    <select id="mapSelect"></select>
-</div>
+<form action="/simulation" method="POST">
 
-<div class="panel">
-    Nombre de fourmis:
-    <input id="nb_ant" type="number" value="5">
-</div>
+    <div id="predefOptions" class="panel presetMap">
+        Map:
+        <select id="mapSelect" name="map">
+        </select>
+    </div>
+    <div class="panel presetMap">
+        <p>créer vos propro map <a href="https://oraxelerator.github.io/trophee_nsi_ant/tools/index.html" target="_blank">ici</a></p>
+    </div>
 
-<button onclick="start()">🚀 Lancer</button>
+    
+    <div class="panel">
+        Nombre de fourmis:
+        <input id="nb_ant" type="number" value="5" name="nbAnt">
+    </div>
+    
+    <!-- effacé car flaks a besoin  de récuprer valeur depuis un input mais si cette input est affiché inchoérance d'interface alors il y est utilisé par js et utilisatetu le change a travers onglet-->
+    <div style="display:none;">
+Map random ? check = oui
+        <input id="randomMap" type="checkbox"  name="randomMap">
+    </div>
+
+    <div class="panel randomMap" >
+        % d'obstacle:
+        <input id="pObstacle" type="range" min="0" max="1" step="0.05"  name="pObstacle">
+    </div>
+
+<div class="panel randomMap">
+        largeur (X)
+        <input id="x" type="number" min="2"   name="x">
+    </div>
+
+<div class="panel randomMap">
+        hauteur (Y)
+        <input id="y" type="number" min="2"   name="y">
+    </div>
+</form>
+
+<!-- attribut form pour que btn reste connecté au form meme en dehors -->
+<input type="submit" value="soumettre" form="monForm" id="start"> </button>
 
 <hr>
 
-<pre id="output"></pre>
 
 <script>
-let source = null;
 
-// switch UI
-document.querySelectorAll("input[name='type']").forEach(r => {
-    r.addEventListener("change", () => {
-        const val = document.querySelector("input[name='type']:checked").value;
-
-        document.getElementById("randomOptions").style.display =
-            val === "random" ? "block" : "none";
-
-        document.getElementById("predefOptions").style.display =
-            val === "predef" ? "block" : "none";
-    });
+const mapJs = ["salit", "test"]//{{map | safe}}
+console.log(mapJs);        
+const liste = document.getElementById("liste");
+const mapSelect  = document.getElementById("mapSelect");
+mapJs.forEach(element => {
+    const li = document.createElement("option"); 
+    li.textContent = element;
+    li.style.display = "block";
+    mapSelect.appendChild(li);
 });
+const checkRandomMap = document.getElementById("randomMap");
+const randomMapEl = document.querySelectorAll(".randomMap");
+const presetMapEl = document.querySelectorAll(".presetMap");
 
-// load maps
-fetch("/get_maps")
-.then(res => res.json())
-.then(data => {
-    const select = document.getElementById("mapSelect");
-    data.forEach(m => {
-        const opt = document.createElement("option");
-        opt.value = m;
-        opt.textContent = m;
-        select.appendChild(opt);
-    });
-});
-
-// start simulation
-function start() {
-    if (source) source.close();
-
-    const type = document.querySelector("input[name='type']:checked").value;
-
-    let payload = {
-        type: type,
-        nb_ant: parseInt(document.getElementById("nb_ant").value)
-    };
-
-    if (type === "random") {
-        payload.width = parseInt(document.getElementById("width").value);
-        payload.height = parseInt(document.getElementById("height").value);
-        payload.obstacle = parseInt(document.getElementById("obstacle").value);
-        payload.path = parseInt(document.getElementById("path").value);
-    } else {
-        payload.map_name = document.getElementById("mapSelect").value;
+function displayRandomMapParam(displayR) {
+    if (displayR) {
+        randomMapEl.forEach(element => {
+            element.style.display = "";
+        });
+        presetMapEl.forEach(element => {
+            element.style.display = "none";
+        });
+    
+    } else{
+        randomMapEl.forEach(element => {
+            element.style.display = "none";
+        });
+        presetMapEl.forEach(element => {
+            element.style.display = "";
+        });
     }
-
-    fetch("/start", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(payload)
-    })
-    .then(() => {
-        source = new EventSource("/stream");
-
-        source.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-
-            let txt = "Tour: " + data.tour + "\n";
-
-            data.ants.forEach(a => {
-                txt += "🐜 " + a.pos + "\n";
-            });
-
-            document.getElementById("output").textContent = txt;
-        };
-    });
 }
+
+
+
+
+checkRandomMap.addEventListener("change", () => {
+    console.log('"cliiick');
+    
+});
+
+
+const presetMapOnglet = document.getElementById("presetMapOnglet");
+const randomMapOnglet = document.getElementById("randomMapOnglet");
+let activeOnglet = 0
+let onglet = [presetMapOnglet, randomMapOnglet]
+onglet.forEach(element => {
+    console.log(element.id);
+    element.addEventListener("click", () => {
+        if (String(element.id) === String(onglet[activeOnglet].id)) {
+            //rien ..
+            console.log("riiien ...");
+        }else {
+            console.log("alilleur");
+            activeOnglet = 1 - activeOnglet
+            console.log(activeOnglet);
+            onglet[activeOnglet].classList.add("active")
+            onglet[1-activeOnglet].classList.remove("active")
+            displayRandomMapParam(Boolean(activeOnglet));
+            checkRandomMap.checked = Boolean(activeOnglet)//change pour py puisse get depuis imput car peut pas juste prendre Boolean(activeOnglet)
+        }
+    })
+});
+
+displayRandomMapParam(Boolean(activeOnglet));
 </script>
 
 </body>

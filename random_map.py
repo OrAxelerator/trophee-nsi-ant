@@ -34,6 +34,8 @@ def random_map(y:int, x:int, weightPath:float, weightObstacle:float) :
         
     espace[yH][xH] = "h"
 
-    return espace, (yH, xH), (yF, xF)
-
-
+    return {
+        "map":espace, 
+        "hill":[yH, xH],
+        "food":[yF, xF]
+    }

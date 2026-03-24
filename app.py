@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
 import time
 import json
 import os
@@ -25,6 +25,7 @@ from unlock import unblock
 from chose_cellule import choose
 from backToHome2_0 import back_home
 from evap import evaporation
+from random_map import random_map
 
 def pheromones(espace, ant:dict, pose:int):
     """pose phéromones a la position de la fourmi avant son déplacement
@@ -37,15 +38,32 @@ def pheromones(espace, ant:dict, pose:int):
 
 
 
-mapdata = get_map()
+# mapdata = get_map()
 
-print("MAAAAAAAAAP", mapdata)
-print("MAAAAAAAAAP", mapdata["hill"])
-espace = mapdata["map"]
-hill = mapdata["hill"]
-
+# print("MAAAAAAAAAP", mapdata)
+# print("MAAAAAAAAAP", mapdata["hill"])
+# espace = mapdata["map"]
+# hill = mapdata["hill"]
+from path import cadjacent
+CONFIG = {}
 def generer():
     global CONFIG
+    if CONFIG["randomMap"] == True:
+        mapdata = random_map(int(CONFIG["y"]), int(CONFIG["x"]), 1.0 - float(CONFIG["pObstacle"]), float(CONFIG["pObstacle"]))
+        path = cadjacent(mapdata["map"], mapdata["hill"], mapdata["food"]) 
+        while path == None: # Si pas de chemin a food
+            mapdata = random_map(int(CONFIG["y"]), int(CONFIG["x"]), 1.0 - float(CONFIG["pObstacle"]), float(CONFIG["pObstacle"])) # recréer map
+            path = cadjacent(mapdata["map"], mapdata["hill"], mapdata["food"])  # recalcule si chemin exite
+        
+        #envoyépath en donné static
+    else:
+        with open(f'static/{CONFIG["map"]}') as f:
+            mapdata = json.load(f)
+
+    print(mapdata)
+    hill = mapdata["hill"]
+    espace = mapdata["map"]
+    print("HIIIIIIIL", hill)
     ant_array = [
         {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
         {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
@@ -56,15 +74,13 @@ def generer():
         {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
         {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
         {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
+        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0}
     ]
     FOOD = 0
     COEF = 6
     tour = 1
-    taux = 0.2    
-    pose = 60
+    taux = 0.05    
+    pose = 100
 
     while True:
         for ant in ant_array:
@@ -73,7 +89,7 @@ def generer():
                 if ant["pos"] != hill:
                     nb_tour = 0 if read_world(ant, (0,0), espace) == "f" else 1
                     print("BAHCHOMMMME")
-                    seq = [1,2]
+                    seq = [1, 2]
                     num = random.choice(seq)
                     if num == 1 or nb_tour == 0:
                         print("🧭🧭🧭🧭🧭🧭🧭🧭")
@@ -110,20 +126,43 @@ def generer():
         }
 
         yield f"data:{json.dumps(data)}\n\n"
-        time.sleep(0.2)
+        time.sleep(0.1)
 
-@app.route("/")
+@app.route('/')
 def index():
-    return render_template("index.html")
+    json_map :list = os.listdir("static")
+    mapArray = []
+    for i, map in enumerate(json_map):
+        mapArray.append(map)
 
-@app.route("/simulation")
+    return render_template('index.html', map=mapArray)
+
+
+@app.route("/simulation", methods=['POST'])
 def simulation():
+    
+    print("=====================")
+    global CONFIG
+    CONFIG = {
+    "map": request.form.get('map'),
+    "nbAnt": request.form.get('nbAnt', 5),
+    "randomMap": request.form.get('randomMap') == "on",
+    "pObstacle": request.form.get('pObstacle', 0),
+    "y": request.form.get('y', 10),
+    "x": request.form.get('x', 10),
+}
+    print(CONFIG)
+    # print(request.form['map'])
+    # print("azertyuiutezazeryuiutezazrtyuiutezazrtyuikyrezryuikutreryuio")
     return render_template("simulation.html")
 
 @app.route("/stream")
 def stream():
     print("STREAM APPELÉ 🔥")
     return Response(generer(), mimetype="text/event-stream")
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

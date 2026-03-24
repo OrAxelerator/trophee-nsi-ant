@@ -18,75 +18,75 @@
 
 <script>
 
-const eventSource = new EventSource("/stream");
+    const eventSource = new EventSource("/stream");
 
-const canvas = document.getElementById("mapCanvas");
-const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById("mapCanvas");
+    const ctx = canvas.getContext("2d");
 
-const cellSize = 40;
+    const cellSize = 40;
 
-const colors = {
-    "X": "#aaaaaa",
-    1: "#00cc00",
-    "f": "#ff0000",
-    "h":"#220000"
-};
-eventSource.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-    console.log(data);
-    drawMap(data.map);
-    drawAnts(data.ants);
+    const colors = {
+        "X": "#aaaaaa",
+        1: "#00cc00",
+        "f": "#ff0000",
+        "h":"#220000"
+    };
+    eventSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        console.log(data);
+        drawMap(data.map);
+        drawAnts(data.ants);
 
-    document.getElementById("liste").textContent =
-        "Tour: " + data.tour + " | Food: " + data.food;
-};
+        document.getElementById("liste").textContent =
+            "Tour: " + data.tour + " | Food: " + data.food;
+    };
 
-function color(number) {
-    let l = 90 - Math.log10(number + 1) * 30;
-    l = Math.max(35, l);
-    return `hsl(120, 100%, ${l}%)`;
-}
+    function color(number) {
+        let l = 90 - Math.log10(number + 1) * 30;
+        l = Math.max(35, l);
+        return `hsl(120, 100%, ${l}%)`;
+    }
 
 
-function drawMap(mapData) {
-    // canvas.clearRect(0, 0, canvas.width, canvas.height);
-    canvas.width = mapData[0].length * cellSize;
-    canvas.height = mapData.length * cellSize;
+    function drawMap(mapData) {
+        // canvas.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = mapData[0].length * cellSize;
+        canvas.height = mapData.length * cellSize;
 
-    for (let y = 0; y < mapData.length; y++) {
-        for (let x = 0; x < mapData[y].length; x++) {
-            // const keys = Object.keys(colors);
-            // console.log(keys);
-            if (typeof mapData[y][x] === "number") {
-                ctx.fillStyle = color(mapData[y][x]);
-            }else {
-                console.log(typeof mapData[y][x]);
-                ctx.fillStyle = colors[mapData[y][x]];
+        for (let y = 0; y < mapData.length; y++) {
+            for (let x = 0; x < mapData[y].length; x++) {
+                // const keys = Object.keys(colors);
+                // console.log(keys);
+                if (typeof mapData[y][x] === "number") {
+                    ctx.fillStyle = color(mapData[y][x]);
+                }else {
+                    console.log(typeof mapData[y][x]);
+                    ctx.fillStyle = colors[mapData[y][x]];
+                }
+                
+                ctx.strokeStyle = "#000000";
+                ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
             }
-            
-            ctx.strokeStyle = "#000000";
-            ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
-            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         }
     }
-}
 
 
-function drawAnts(ants) {
-    ants.forEach(ant => {
-        const x = ant.pos[1] * cellSize;
-        const y = ant.pos[0] * cellSize;
-        if (ant.have_food) {
-            ctx.fillStyle = "red";
-        }else {
-            ctx.fillStyle = "orange";
-        }
-        
-        ctx.beginPath();
-        ctx.arc(x + cellSize/2, y + cellSize/2, 8, 0, 2 * Math.PI);
-        ctx.fill();
-    });
-}
+    function drawAnts(ants) {
+        ants.forEach(ant => {
+            const x = ant.pos[1] * cellSize;
+            const y = ant.pos[0] * cellSize;
+            if (ant.have_food) {
+                ctx.fillStyle = "red";
+            }else {
+                ctx.fillStyle = "orange";
+            }
+            
+            ctx.beginPath();
+            ctx.arc(x + cellSize/2, y + cellSize/2, 8, 0, 2 * Math.PI);
+            ctx.fill();
+        });
+    }
 
 </script>
 
