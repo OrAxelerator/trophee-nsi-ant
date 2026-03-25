@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Ant Simulation</title>
+        <link rel="icon" type="image/png" href="./favicon.png">
     <style>
         * {
     box-sizing: border-box;
@@ -62,6 +63,12 @@ input {
             border: none;
             cursor: pointer;
         }
+        input[type="select"] {
+            background-color: var(--main-yellow);
+        }
+        input[type="select"]::file-selector-button {
+            background-color: var(--active-yellow);
+        }
         .active {
             background-color: var(--active-yellow);
             
@@ -73,20 +80,33 @@ input {
             flex-direction: row;
         }
         nav > div {
-            border-radius: 10px 10px 0px 0px;
             background-color: var(--main-yellow);
             border: 2px solid black;
-            width: 40%;
+            width: 50%;
             margin: 0 auto;
             text-align: center;
             cursor: pointer;
+            padding: 0.4em;
             
+        }
+        #presetMapOnglet {
+            border-radius: 14px 0px 0px 0px;
+            border-right: 1px solid black;
+        }
+        #randomMapOnglet {
+            border-radius: 0px 14px 0px 0px;
+            border-left: 1px solid black;
         }
 
         form {
             background-color: var(--main-yellow);
             width: 90%;
             margin: 0 auto;
+            border-radius: 0px 0px 14px 14px;
+            border: solid #333 2px;
+        border-top: none;
+        text-align: center;
+            padding-top: 30px;
         }
         #titre {
             text-align: center;
@@ -128,10 +148,10 @@ input {
 
 <nav>
     <div class="onglet active" id="presetMapOnglet">
-        preset
+        Preset map
     </div>
     <div class="onglet" id="randomMapOnglet">
-        random
+        Random map
     </div>
 </nav>
 
@@ -159,30 +179,31 @@ Map random ? check = oui
     </div>
 
     <div class="panel randomMap" >
-        % d'obstacle:
+        Pourcentage d'obstacle:
         <input id="pObstacle" type="range" min="0" max="1" step="0.05"  name="pObstacle">
     </div>
 
 <div class="panel randomMap">
-        largeur (X)
+        Largeur (X)
         <input id="x" type="number" min="2"   name="x">
     </div>
 
 <div class="panel randomMap">
-        hauteur (Y)
+        Hauteur (Y)
         <input id="y" type="number" min="2"   name="y">
     </div>
+    <!-- attribut form pour que btn reste connecté au form meme en dehors -->
+    <input type="submit" value="Soumettre"  id="start" from="simulation"> 
 </form>
 
-<!-- attribut form pour que btn reste connecté au form meme en dehors -->
-<input type="submit" value="soumettre" form="monForm" id="start"> </button>
 
 <hr>
 
 
 <script>
 
-const mapJs = ["salit", "test"]//{{map | safe}}
+const mapJs ={{map | safe}}
+// const mapJs = ["salit", "test"]//{{map | safe}}
 console.log(mapJs);        
 const liste = document.getElementById("liste");
 const mapSelect  = document.getElementById("mapSelect");
@@ -218,18 +239,12 @@ function displayRandomMapParam(displayR) {
 
 
 
-checkRandomMap.addEventListener("change", () => {
-    console.log('"cliiick');
-    
-});
-
 
 const presetMapOnglet = document.getElementById("presetMapOnglet");
 const randomMapOnglet = document.getElementById("randomMapOnglet");
 let activeOnglet = 0
 let onglet = [presetMapOnglet, randomMapOnglet]
 onglet.forEach(element => {
-    console.log(element.id);
     element.addEventListener("click", () => {
         if (String(element.id) === String(onglet[activeOnglet].id)) {
             //rien ..
@@ -237,7 +252,6 @@ onglet.forEach(element => {
         }else {
             console.log("alilleur");
             activeOnglet = 1 - activeOnglet
-            console.log(activeOnglet);
             onglet[activeOnglet].classList.add("active")
             onglet[1-activeOnglet].classList.remove("active")
             displayRandomMapParam(Boolean(activeOnglet));
@@ -247,6 +261,8 @@ onglet.forEach(element => {
 });
 
 displayRandomMapParam(Boolean(activeOnglet));
+// Boolean(0) => false
+// Boolean(1) => true
 </script>
 
 </body>

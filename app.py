@@ -26,6 +26,9 @@ from chose_cellule import choose
 from backToHome2_0 import back_home
 from evap import evaporation
 from random_map import random_map
+from path import cadjacent
+from  ant import init_ant
+
 
 def pheromones(espace, ant:dict, pose:int):
     """pose phéromones a la position de la fourmi avant son déplacement
@@ -38,22 +41,20 @@ def pheromones(espace, ant:dict, pose:int):
 
 
 
-# mapdata = get_map()
 
-# print("MAAAAAAAAAP", mapdata)
-# print("MAAAAAAAAAP", mapdata["hill"])
-# espace = mapdata["map"]
-# hill = mapdata["hill"]
-from path import cadjacent
+path = None
 CONFIG = {}
 def generer():
     global CONFIG
+    global path #chemin le plius cout
     if CONFIG["randomMap"] == True:
         mapdata = random_map(int(CONFIG["y"]), int(CONFIG["x"]), 1.0 - float(CONFIG["pObstacle"]), float(CONFIG["pObstacle"]))
         path = cadjacent(mapdata["map"], mapdata["hill"], mapdata["food"]) 
         while path == None: # Si pas de chemin a food
             mapdata = random_map(int(CONFIG["y"]), int(CONFIG["x"]), 1.0 - float(CONFIG["pObstacle"]), float(CONFIG["pObstacle"])) # recréer map
             path = cadjacent(mapdata["map"], mapdata["hill"], mapdata["food"])  # recalcule si chemin exite
+        print("cheeeeeeeeeeeeeeeeck")
+        print(path)
         
         #envoyépath en donné static
     else:
@@ -64,22 +65,12 @@ def generer():
     hill = mapdata["hill"]
     espace = mapdata["map"]
     print("HIIIIIIIL", hill)
-    ant_array = [
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0},
-        {"pos": hill.copy(), "angle":[0,-1], "have_food":False,"demi_tour": False,"mode" : "home","side" : 0}
-    ]
+    
+    ant_array = init_ant(int(CONFIG["nbAnt"]), hill)
     FOOD = 0
     COEF = 6
     tour = 1
-    taux = 0.05    
+    taux = 0.1
     pose = 100
 
     while True:
@@ -120,13 +111,13 @@ def generer():
         tour += 1
         data = {
             "ants": ant_array,
-            "map": espace,   # ⚠️ prends espace directement
+            "map": espace,   # prends espace directement
             "food": FOOD,
             "tour": tour
         }
 
         yield f"data:{json.dumps(data)}\n\n"
-        time.sleep(0.1)
+        time.sleep(0.3)
 
 @app.route('/')
 def index():
@@ -140,7 +131,6 @@ def index():
 
 @app.route("/simulation", methods=['POST'])
 def simulation():
-    
     print("=====================")
     global CONFIG
     CONFIG = {
@@ -152,13 +142,13 @@ def simulation():
     "x": request.form.get('x', 10),
 }
     print(CONFIG)
-    # print(request.form['map'])
-    # print("azertyuiutezazeryuiutezazrtyuiutezazrtyuikyrezryuikutreryuio")
-    return render_template("simulation.html")
+    global path
+    print(path)
+    return render_template("simulation.html", shortPath=path)
 
 @app.route("/stream")
 def stream():
-    print("STREAM APPELÉ 🔥")
+    print("STREAM APPELEEEE")
     return Response(generer(), mimetype="text/event-stream")
 
 
