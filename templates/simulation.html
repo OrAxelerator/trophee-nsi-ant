@@ -46,7 +46,7 @@ body {
         }
 
         #window {
-    background-color: var(--main-yellow);
+    background-color: var(--active-yellow);
     display: flex;
     flex-direction: column;
     height: 100dvh;
@@ -74,12 +74,12 @@ body {
 
 
         #minimizeBtn {
-            background-color: var(--main-yellow);
+            background-color: var(--active-yellow);
             cursor: pointer;
             font-size: 3em;
         }
         #minimizeBtn:hover {
-            background-color: var(--active-yellow);
+            background-color: var(--main-yellow);
         }
         
 </style>
@@ -288,7 +288,6 @@ document.addEventListener("wheel", (event) => {
     cellSize +=value
     cellSize = Math.max(Math.min(cellSize,100 ), 1 );
     drawMap(MAP);//redraw avec nouvelle valeur
-    // updateSizeCellule(sizeCellule);
     sizeInput.value = cellSize
     console.log(cellSize);
 });

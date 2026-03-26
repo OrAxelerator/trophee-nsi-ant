@@ -76,14 +76,11 @@ def generer():
     while True:
         for ant in ant_array:
             if ant["have_food"]:
-                print("🍔🍔🍔🍔🍔🍔")
                 if ant["pos"] != hill:
                     nb_tour = 0 if read_world(ant, (0,0), espace) == "f" else 1
-                    print("BAHCHOMMMME")
                     seq = [1, 2]
                     num = random.choice(seq)
                     if num == 1 or nb_tour == 0:
-                        print("🧭🧭🧭🧭🧭🧭🧭🧭")
                         back_Home = back_home(ant, hill, espace, nb_tour) 
                         case = back_Home
                     else:
@@ -98,8 +95,6 @@ def generer():
                         FOOD +=1
                         ant["have_food"] = False
                         ant["angle"] = (-(ant["angle"][0]), -(ant["angle"][1]))
-                else:
-                    print("HIIIIIL:",hill)
             else:
                 choix = get_cellule(espace, ant, "filtered")
                 if choix == []:
@@ -117,16 +112,25 @@ def generer():
         }
 
         yield f"data:{json.dumps(data)}\n\n"
-        time.sleep(0.3)
+        time.sleep(0.2)
+
+import os
+try:
+    global json_map
+    json_map = os.listdir("static/worlds")
+except Exception as e:
+    print(e)
+    json_map = []
+
 
 @app.route('/')
 def index():
-    json_map :list = os.listdir("static")
-    mapArray = []
-    for i, map in enumerate(json_map):
-        mapArray.append(map)
+    # return render_template('mapedit.html')
+    return render_template('index.html', map=json_map)
 
-    return render_template('index.html', map=mapArray)
+@app.route('/mapedit')
+def mapedit():
+    return render_template('mapedit.html')  
 
 
 @app.route("/simulation", methods=['POST'])
@@ -144,14 +148,22 @@ def simulation():
     print(CONFIG)
     global path
     print(path)
-    return render_template("simulation.html", shortPath=path)
+    return render_template("simulation.html", shortPath=[[0,0], [0, 1], [0, 2]])#, normamentlt config["path"]
 
 @app.route("/stream")
 def stream():
     print("STREAM APPELEEEE")
     return Response(generer(), mimetype="text/event-stream")
 
-
+@app.route("/saveMap", methods=['POST'])
+def saveMap():
+    data = request.form.get('mapData')
+    print(data)
+    #save le sjon dans /static/world et rechargé json_map
+    # shortPath = cadjacent(data["map"],data["hill"] )  
+    #rajouter shortPath a json
+    print("YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESS")
+    return render_template('index.html', map=json_map)
 
 
 if __name__ == "__main__":

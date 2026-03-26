@@ -253,7 +253,7 @@ def back_home(ant, anthill, espace, nb_tour) :
     ant["angle"] = angle_beginning
     if ant["mode"] == "longer":
         fonc = longer(choix_angle, anthill, ant, espace)
-        print("FFFFFFFFFOOOOOOOOOOOOOOONNNNNNNNNNNCCCCCCCCCC", fonc)
+        # print("FFFFFFFFFOOOOOOOOOOOOOOONNNNNNNNNNNCCCCCCCCCC", fonc)
         if type(fonc) == tuple :
             case = fonc[0]
             message = fonc[1]
@@ -261,13 +261,13 @@ def back_home(ant, anthill, espace, nb_tour) :
             message = fonc #good
 
         if message == "NOT GOOD":
-            print(case)
+            # print(case)
             return case
         else :
             ant["mode"] = "home"
 
     if ant["mode"] == "home" :
-        print("angle possible vérifiés", posi_vector_angle)
+        # print("angle possible vérifiés", posi_vector_angle)
         if nb_tour == 0 :
             possibliyGoodAngle =meilleurProduitScalaire(posi_vector_angle, ant, anthill, espace, "backHome")
         elif nb_tour != 0 :
@@ -307,18 +307,18 @@ def back_home(ant, anthill, espace, nb_tour) :
                         pass # 2
         
                     
-        print("possibliyGoodAngle", possibliyGoodAngle)
+        # print("possibliyGoodAngle", possibliyGoodAngle)
         ant["angle"] = possibliyGoodAngle
-        print("Thanks for waiting, angle choosed is ", ant["angle"])
-        print("Now, please wait, the choice of direction direction is in process...")
+        # print("Thanks for waiting, angle choosed is ", ant["angle"])
+        # print("Now, please wait, the choice of direction direction is in process...")
         posi_vector_direction = get_cellule(espace, ant, mode="filtered")
-        print("////////////// 3", posi_vector_direction)
+        # print("////////////// 3", posi_vector_direction)
         directionChoosed = maximumFero(posi_vector_direction, ant, anthill, espace, obs)
-        print("Thanks again, so the ant might go to ", directionChoosed)
+        # print("Thanks again, so the ant might go to ", directionChoosed)
             
             #nb_tour += 1
             
-        print("POSITION",ant["pos"])
+        # print("POSITION",ant["pos"])
         return directionChoosed
 
         

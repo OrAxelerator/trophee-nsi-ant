@@ -35,7 +35,7 @@ body {
 button,
 input {
     padding: 5px;
-    background-color: var(--main-yellow);
+    background-color: var(--active-yellow);
     border-radius: 10px;
     cursor: pointer;
 }
@@ -43,7 +43,7 @@ input {
 #inputBox {
     z-index: 3;
   position: absolute;
-  background-color: var(--active-yellow);
+  background-color: var(--main-yellow);
   padding: 2em;
   border-radius: 15px;
   top: 50%;
@@ -64,16 +64,22 @@ input {
             cursor: pointer;
         }
         #mapSelect{
-            background-color: var(--main-yellow);
+            background-color: var(--active-yellow);
             padding: 7px;
             border-radius: 10px;
         }
         #mapSelect::file-selector-button {
-            background-color: var(--active-yellow);
+            background-color: var(--main-yellow);
         }
         .active {
-            background-color: var(--active-yellow);
             
+            text-decoration: underline;
+            background-color:var(--active-yellow);
+            border-bottom: none;
+            
+            /* de base main-euyloow */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);        
+            font-weight: bold;
         }
         nav {
             width: 90%;
@@ -82,7 +88,7 @@ input {
             flex-direction: row;
         }
         nav > div {
-            background-color: var(--main-yellow);
+            background-color:#ede358; 
             border: 2px solid black;
             width: 50%;
             margin: 0 auto;
@@ -101,20 +107,22 @@ input {
         }
 
         form {
-            background-color: var(--main-yellow);
+            background-color: var(--active-yellow);
             width: 90%;
             margin: 0 auto;
             border-radius: 0px 0px 14px 14px;
             border: solid #333 2px;
+ 
         border-top: none;
         text-align: center;
-            padding-top: 30px;
+        padding-top: 30px;
+        padding-bottom: 40px;
         }
         #titre {
             text-align: center;
         }
         #start {
-    background: linear-gradient(135deg, #ffd84d, #ffb700);
+    background: linear-gradient(135deg, var(--main-yellow),var(--active-yellow));
     border-radius: 16px;
     width: 220px;
     margin: 40px auto 0 auto; 
@@ -123,9 +131,7 @@ input {
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
-    border: none;
     cursor: pointer;
-    display: block;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
     transition: all 0.2s ease;
 }
@@ -164,7 +170,8 @@ input {
         <select id="mapSelect" name="map"></select>
     </div>
     <div class="panel presetMap">
-        <p>créer vos propro map <a href="https://oraxelerator.github.io/trophee_nsi_ant/tools/index.html" target="_blank">ici</a></p>
+        <p>créer vos propres maps </p>
+        <a href="{{ url_for('mapedit') }}">Aller à l'éditeur</a>
     </div>
 
     

@@ -5,21 +5,21 @@ from cellule import get_cellule
 #from ..world import espace
 from read_world import read_world
 
-ant_test = {
-      "pos" : [0,0],
-      "angle" : (0,1),
-      "have_food" : False
+# ant_test = {
+#       "pos" : [0,0],
+#       "angle" : (0,1),
+#       "have_food" : False
 
-}
-choix_fourmi = get_cellule(espace, ant_test, "filtered")
+# }
+# choix_fourmi = get_cellule(espace, ant_test, "filtered")
 
 def dico_cases_getCel (choix, ant, espace) : 
     TousRead_world = {}
-    print("CHHHHHHHHHHHOIX", choix)
+    # print("CHHHHHHHHHHHOIX", choix)
 
     for el in choix :
 
-        print("ELLLLLLLLLLL", el)
+        # print("ELLLLLLLLLLL", el)
         case = read_world(ant, el, espace)
         if str(case) in TousRead_world.keys():
             TousRead_world[str(case)] += 1
@@ -31,22 +31,22 @@ def dico_cases_getCel (choix, ant, espace) :
 def caclculTaux(choix:list, ant, espace, dico, mode) :
     
             
-    print("typr de dchoix 🍇", type(choix[0]))
+    # print("typr de dchoix 🍇", type(choix[0]))
     if len(choix) == 1 :
-        print("CHOIX VECTEUR", choix[0])
+        # print("CHOIX VECTEUR", choix[0])
         return choix[0] ##################### A REVOIR OU ADAPTER LE CODE
     
     else :
         pheromone_rate = []
         choixXH = []
         for el in choix :
-            print("hmmmmmmmmmmmmmmmmm", el)
+            # print("hmmmmmmmmmmmmmmmmm", el)
             if mode == "case" :
                 if read_world(ant, el, espace) != "h" and read_world(ant, el, espace) != "X":
                     choixXH.append(el)
             if mode == "vector" :
                 choixXH = choix
-        print("CHOIXXH", choixXH )
+        # print("CHOIXXH", choixXH )
         
         for el in choixXH :
             weight = read_world(ant, el, espace)
@@ -58,20 +58,20 @@ def caclculTaux(choix:list, ant, espace, dico, mode) :
             
             if mode == "vector":
 
-                print(weight)
+                # print(weight)
                 if weight == "f" or weight == "h" or weight == "X":
                     pheromone_rate.append(1/len(choixXH))
                 else:
                     pheromone_rate.append(weight/len(choixXH))
 
-        print("choixXH", choixXH)
-        print("pheromone_rate", pheromone_rate)
+        # print("choixXH", choixXH)
+        # print("pheromone_rate", pheromone_rate)
         best_cellule = random.choices(  
             population = choixXH,
             weights = pheromone_rate ,
             k=1
         )
-        print('tpye de best cell 🗿🗿🗿🗿', type(best_cellule[0]))
+        # print('tpye de best cell 🗿🗿🗿🗿', type(best_cellule[0]))
 
         if type(choix[0]) == tuple:
             return best_cellule[0]
