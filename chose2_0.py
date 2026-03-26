@@ -33,13 +33,21 @@ def caclculTaux(choix:list, ant, espace, dico, mode) :
             
     # print("typr de dchoix 🍇", type(choix[0]))
     if len(choix) == 1 :
+        print("mode : ", mode)
+        print(read_world(ant, choix[0], espace))
+        print("---------------")
         # print("CHOIX VECTEUR", choix[0])
         return choix[0] ##################### A REVOIR OU ADAPTER LE CODE
     
     else :
         pheromone_rate = []
         choixXH = []
-        for el in choix :
+        for i, el in enumerate(choix) :
+            weight = read_world(ant, el, espace)
+            if weight == "out":#case en dehors de map
+                
+                print("DEKEEEEETE 222", read_world(ant, el, espace))
+                continue
             # print("hmmmmmmmmmmmmmmmmm", el)
             if mode == "case" :
                 if read_world(ant, el, espace) != "h" and read_world(ant, el, espace) != "X":
@@ -48,12 +56,18 @@ def caclculTaux(choix:list, ant, espace, dico, mode) :
                 choixXH = choix
         # print("CHOIXXH", choixXH )
         
-        for el in choixXH :
+        for i, el in enumerate(choixXH) :
             weight = read_world(ant, el, espace)
-            if mode == "case" :
-                if weight == "f":
+            if weight == "out":#case en dehors de map
+                del choixXH[i]
+                print("DEKEEEEETE")
+                continue
+            if mode == "case":
+                if weight in ("f", "h") :
+                    
                     pheromone_rate.append(1/len(choixXH))
                 else:
+                    print("pode de merde", weight)
                     pheromone_rate.append(weight/len(choixXH))
             
             if mode == "vector":
@@ -64,11 +78,13 @@ def caclculTaux(choix:list, ant, espace, dico, mode) :
                 else:
                     pheromone_rate.append(weight/len(choixXH))
 
-        # print("choixXH", choixXH)
-        # print("pheromone_rate", pheromone_rate)
+        print("choixXH", choixXH)
+        print("mode : ", mode)
+        # print(read_world(ant, choixXH[0], espace))
+        print("pheromone_rate", pheromone_rate)
         best_cellule = random.choices(  
             population = choixXH,
-            weights = pheromone_rate ,
+            weights = pheromone_rate,
             k=1
         )
         # print('tpye de best cell 🗿🗿🗿🗿', type(best_cellule[0]))

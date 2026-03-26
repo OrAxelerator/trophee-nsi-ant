@@ -2,19 +2,7 @@ from flask import Flask, render_template, Response, request
 import time
 import json
 import os
-
 from load_world import get_map
-
-app = Flask(__name__)
-
-
-
-
-def move(choix:tuple, ant:dict):
-    print("choix de move() : ", choix)
-    ant["pos"][0] += choix[0] 
-    ant["pos"][1] += choix[1]
-
 import random
 from cellule import get_cellule
 from draw import draw
@@ -26,8 +14,20 @@ from chose_cellule import choose
 from backToHome2_0 import back_home
 from evap import evaporation
 from random_map import random_map
-from path import cadjacent
+from path import cadjacent, trouve
 from  ant import init_ant
+
+
+app = Flask(__name__)
+
+
+
+
+def move(choix:tuple, ant:dict):
+    print("choix de move() : ", choix)
+    ant["pos"][0] += choix[0] 
+    ant["pos"][1] += choix[1]
+
 
 
 def pheromones(espace, ant:dict, pose:int):
@@ -39,11 +39,38 @@ def pheromones(espace, ant:dict, pose:int):
             espace[ant["pos"][0]][ant["pos"][1]] += pose
 
 
+def load_json_list():
+    try:
+        global json_map
+        json_map = os.listdir("static/worlds")
+        return json_map
+    except Exception as e:
+        print(e)
+        json_map = []
 
+
+import os
+import json
+
+def ecrire_json(data: dict, nom_fichier: str = "output.json"):
+    print("écriture")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    dossier = os.path.join(base_dir, "static", "worlds")
+
+    os.makedirs(dossier, exist_ok=True)
+
+    chemin_fichier = os.path.join(dossier, nom_fichier)
+
+    with open(chemin_fichier, "w", encoding="utf-8") as f:#w : écrase a l'écriture si existe déja
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+    return chemin_fichier
 
 
 path = None
 CONFIG = {}
+
+
 def generer():
     global CONFIG
     global path #chemin le plius cout
@@ -58,7 +85,7 @@ def generer():
         
         #envoyépath en donné static
     else:
-        with open(f'static/{CONFIG["map"]}') as f:
+        with open(f'static/worlds/{CONFIG["map"]}') as f:
             mapdata = json.load(f)
 
     print(mapdata)
@@ -114,19 +141,13 @@ def generer():
         yield f"data:{json.dumps(data)}\n\n"
         time.sleep(0.2)
 
-import os
-try:
-    global json_map
-    json_map = os.listdir("static/worlds")
-except Exception as e:
-    print(e)
-    json_map = []
+
 
 
 @app.route('/')
 def index():
     # return render_template('mapedit.html')
-    return render_template('index.html', map=json_map)
+    return render_template('index.html', map=load_json_list())
 
 @app.route('/mapedit')
 def mapedit():
@@ -158,12 +179,27 @@ def stream():
 @app.route("/saveMap", methods=['POST'])
 def saveMap():
     data = request.form.get('mapData')
+    data = json.loads(data) #convertir en vrai json car js renvoi string
     print(data)
+    
+    short_path_brut = cadjacent(data["map"], data["hill"])
+    if short_path_brut != None:
+        short_path = trouve(short_path_brut, data["hill"])
+        data["short"] = short_path #rajoute chemin le plus court dans la var "json" data
+        print(data["short"])
+        ecrire_json(data, data["name"])
+    else:
+        print("="*20)
+        print("⚠️ Map chargé ne contient pas un chemin direct entre la nouritture et la fourmilière ⚠️")
+        print("Assurez vous d'avoir mis une source de nourriture et une fourmillière")
+        print("="*20)
+    
     #save le sjon dans /static/world et rechargé json_map
     # shortPath = cadjacent(data["map"],data["hill"] )  
     #rajouter shortPath a json
     print("YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESS")
-    return render_template('index.html', map=json_map)
+    
+    return render_template('index.html', map=load_json_list())
 
 
 if __name__ == "__main__":

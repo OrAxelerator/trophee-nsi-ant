@@ -1,13 +1,8 @@
 
 
-from world import espace
 from read_world import read_world
 
-ant1 = { # exemple
-    "pos" : [0,0],
-    "angle" : [0,1],
-    "have_food" : False
-}
+
 
 def get_cellule(world, ant: dict, mode: str) -> list:
     """renvoi la liste des positions possibles autour de la fourmi"""
@@ -47,7 +42,7 @@ def get_cellule(world, ant: dict, mode: str) -> list:
                 # ( avec dir_random[coef] == dir[coef] )
             print("coef", coef)
             if mode == "almostAll" or mode == "filtered":
-                if read_world(ant, dir, espace) != "X":
+                if read_world(ant, dir, world) != "X":
                     case.append(tuple(dir)) # else don't append
                     # append (dir : angle "simple")
             elif mode == "all" :
@@ -61,13 +56,13 @@ def get_cellule(world, ant: dict, mode: str) -> list:
                 a[coef] = dir[coef]
                 a[1 - coef] = test_ang[1 - coef]
                 
-                if test_ang not in dir_ilegal and a not in case:
+                if test_ang not in dir_ilegal and tuple(a) not in case:
                     print("test ang : ", test_ang)
-                    print(read_world(ant, dir, espace))
-                    print(read_world(ant, test_ang, espace))
+                    print(read_world(ant, dir, world))
+                    print(read_world(ant, test_ang, world))
                     if mode == "almostAll" or mode == "filtered":
-                        if read_world(ant, a, espace) != "X": # check d'abord valeur de diagonal et rajoute que si une des 2 case adj et != "X"
-                            if read_world(ant, dir, espace) == "X" and read_world(ant, test_ang, espace) == "X": # test du 1 d'abord
+                        if read_world(ant, a, world) != "X": # check d'abord valeur de diagonal et rajoute que si une des 2 case adj et != "X"
+                            if read_world(ant, dir, world) == "X" and read_world(ant, test_ang, world) == "X": # test du 1 d'abord
                                 print("case diag bloqué : ", (dir[coef], 1))
                             else:
                                 print("case diag accessible : ", a) # append a choix_360 
@@ -81,5 +76,5 @@ def get_cellule(world, ant: dict, mode: str) -> list:
     return case
 
 
-print(get_cellule(espace, ant1, "filtered")) # problème la va dire 2 fois que (1,1) est dispo : mal opti
+# print(get_cellule(world, ant1, "filtered")) # problème la va dire 2 fois que (1,1) est dispo : mal opti
  #comment faire en sorte que cherche pas plusieur fois meme diag
