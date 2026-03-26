@@ -10,7 +10,7 @@ def get_cellule(world, ant: dict, mode: str) -> list:
     dir_ilegal = [] # angle ilegal (qui amene en dehors de map)
     if ant["pos"][0] == 0:
         dir_ilegal.append([-1,0])
-    if ant["pos"][0] == len(world[0]) - 1 :
+    if ant["pos"][0] == len(world) - 1 :
         dir_ilegal.append([1,0])
     if ant["pos"][1] == 0 :
         dir_ilegal.append([0,-1])
@@ -56,7 +56,7 @@ def get_cellule(world, ant: dict, mode: str) -> list:
                 a[coef] = dir[coef]
                 a[1 - coef] = test_ang[1 - coef]
                 
-                if test_ang not in dir_ilegal and tuple(a) not in case:
+                if test_ang not in dir_ilegal and tuple(a) not in case :
                     print("test ang : ", test_ang)
                     print(read_world(ant, dir, world))
                     print(read_world(ant, test_ang, world))
@@ -73,6 +73,7 @@ def get_cellule(world, ant: dict, mode: str) -> list:
                                 # d'abbord check si diagonal = "X" car plus opti
                     elif mode == "all" :
                         case.append(tuple(a))
+    print("CAAAAASSSEEE", case)
     return case
 
 
