@@ -4,32 +4,30 @@
 
 L'idée de d'origine était de créer une simulation de déplacement des fourmis dans un environnement fermé, et de voir les fourmis trouver le chemin le plus court entre la fourmilière et la nourriture, peu importe la map et sans organisation centrale.
 
-Problématique initiale :
+**Problématique initiale :**
 Comment modéliser le comportement de fourmis dans un environnement fermé de manière à faire émerger le chemin le plus court entre une source de nourriture et la fourmilière ?
 Plus précisément, comment les fourmis, ne disposant que d’informations locales, peuvent-elles coopérer indirectement pour résoudre un problème d’optimisation ?
 
 L’objectif du projet est de mettre des fourmis dans un environnement fermé (une “carte”), dans laquelle chaque fourmi suit des règles simples comme les déplacements influencés par les phéromones, dépôt de phéromones..
 À travers ces interactions locales, le système doit permettre l’émergence d’un comportement global appelé stigmergie, conduisant progressivement à l’identification du chemin le plus court entre la fourmilière et la nourriture, quelle que soit la configuration de la carte.
 
-### Présentation de l'équipe
 
 
-### Étapes du projet
+---
 
-
-* **role :**<br>
+### **Role :**<br>
 - Aélys : créer fonction backhome permettant aux fourmis de rentrer vers la fourmilière en s'aidant avec les produits scalaires etc
 - Anatole : gérer systeme de path findings A* pour check map, [voir doc](/docs/doc_path_finding.md)
-- Axel : gestion de l'inerface/infrastructure flask ([index](/templates/index.html), [mapEditor](/templates/mapedit.html), [simulation](/templates/simulation.html), [app.py](/app.py))
+- Axel : gestion de l'inerface/infrastructure flask ([index](/sources/templates/index.html), [mapEditor](/sources/templates/mapedit.html), [simulation](/sources/templates/simulation.html), [app.py](/sources/app.py))
 - Abdelhalim : creation de la fonction evaporation permettant l'evaporation des pheromones pendant la simulation (evap.py), creation de la fonction center emoji pour center emoji emojis dans la grille lors  de l'affichage dans le terminal, centrage de l'afichage dans le terminal + couleurs pour mieux afficher la quantité de pheromones dans le terminal avec l'utilisation de colorama (draw.py)
 
 ---
 
+### Étapes du projet :
+
 * **création de l'éditeur de map :**<br>
  Le problème était que créer une carte était long et complexe d'où l'idée de créer un éditeur de map en java-script sur une page html  pour pouvoir editer/modifier des cartes et les enregistrer en json, mais cependant si la carte créée dépassait les 30 cases de longeurs l'éditeur ne pouvait pas adpater la taille de la carte affichée. J'ai donc créé un systeme de navigation qui sera réutilisé dans l'affichage de la simulation.
 
-* **problème indexError**<br>
- pour récuperer case de la fourmi 
 
 * **Connexe ?** <br>
  Nous voulions crée de mulitples cartes de différent manières: éditer, création aléatoire, modification.

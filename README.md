@@ -5,7 +5,7 @@ PHÉROMONES est une démonstration de résolution de problème inspirée d’un 
 
 ### Instalation
 ```
-git clone https://github.com/OrAxelerator/trophee_nsi_ant.git
+git clone -b flask https://github.com/OrAxelerator/trophee_nsi_ant.git
 ```
 
 ### Démarrage :
@@ -16,6 +16,10 @@ cd trophee_nsi_ant
 et installez la librairie ``Flask``
 ```
 pip install -r requirements.txt 
+```
+allez au dossier ```/sources```
+```
+cd sources
 ```
 et executé  la commande ``flask run --port=8080``
 puis allez en local hsot au port 8080
@@ -34,7 +38,8 @@ Le projet est sous license **GNU** - voir le fichier [LICENSE](/LICENSE.md) pour
 ### Autre :
 - Ce projet a utilisé de l'ia [voir plus](/ia.md)
 - présentation plus détaillée du projet [voir plus](/presentation.md)
+- explication de la logique principale du projet [voir plus](/docs/doc_main.md)
 
 ### Logo :
 
-![](/favicon.png    ) 
+![](/favicon.png) 
