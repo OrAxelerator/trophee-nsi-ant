@@ -13,9 +13,6 @@ ant1 = { # exemple
     "have_food" : True
 }
 
-anthill1 = {
-    "pos" : [0,0]
-}
 
 def searchMaxAngle (firstList, underList) :
         max_angle = []
@@ -29,7 +26,7 @@ def searchMaxAngle (firstList, underList) :
             if el[0] == maxi :
                 max_produit_scalaire.append(el)
 
-        print("max_produit_scalaire", max_produit_scalaire)
+        # print("max_produit_scalaire", max_produit_scalaire)
         for el in max_produit_scalaire :
             max_angle.append(firstList[el[1]])
         return [max_angle, maxi ]# renvoie les vecteur dans posivector a la position du produit scalaire
@@ -53,22 +50,21 @@ def maximumFero(choices, ant, anthill, espace, obs): # ANT
         valCaseEnFonctionFero = read_world(ant, caseEnFonctionFero, espace) * coef_fero
     else : 
         valCaseEnFonctionFero =1 * coef_fero
-    print("val vecteur ", read_world(ant, posi_vecteur, espace))
+    # print("val vecteur ", read_world(ant, posi_vecteur, espace))
     if read_world(ant, posi_vecteur, espace) != "f" :
         valVecteur = read_world(ant, posi_vecteur, espace) *coef_vecteur
     else :
         valVecteur = 1 * coef_vecteur
     choix = [posi_vecteur, caseEnFonctionFero]
-    print("++++++++++++++", choix, )
+    # print("++++++++++++++", choix, )
 
     pheromone_rate = [valVecteur, valCaseEnFonctionFero]
-    print("++++++++++++++", choix, pheromone_rate)
+    # print("++++++++++++++", choix, pheromone_rate)
     best_cellule = random.choices(  
         population = choix,
         weights = pheromone_rate ,
         k=1
     )
-    print("WWWWWWWWWWWWWWHHHHH", best_cellule[0])
     return best_cellule[0]
 
 

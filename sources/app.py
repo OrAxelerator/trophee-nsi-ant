@@ -31,7 +31,6 @@ def pheromones(espace, ant:dict, pose:int):
     """pose phéromones a la position de la fourmi avant son déplacement
     seulement si elle a de la nourriture"""
     if ant["have_food"]:
-        print("pos :", espace[ant["pos"][0]][ant["pos"][1]])
         if espace[ant["pos"][0]][ant["pos"][1]] not in ("f","h") :
             espace[ant["pos"][0]][ant["pos"][1]] += pose
 
@@ -49,7 +48,7 @@ def load_json_list():
 
 
 def ecrire_json(data: dict, nom_fichier: str = "output.json"):
-    print("écriture")
+    print("écriture du json")
     base_dir = os.path.dirname(os.path.abspath(__file__))
     dossier = os.path.join(base_dir, "static", "worlds")
 
@@ -72,29 +71,24 @@ def generer():
     global path #chemin le plius cout
     if CONFIG["randomMap"] == True:
         mapdata = random_map(int(CONFIG["y"]), int(CONFIG["x"]), 1.0 - float(CONFIG["pObstacle"]), float(CONFIG["pObstacle"]))
-        # path = cadjacent(mapdata["map"], mapdata["hill"], mapdata["food"]) 
-        # while path == None: # Si pas de chemin a food
-        #     mapdata = random_map(int(CONFIG["y"]), int(CONFIG["x"]), 1.0 - float(CONFIG["pObstacle"]), float(CONFIG["pObstacle"])) # recréer map
-        #     path = cadjacent(mapdata["map"], mapdata["hill"], mapdata["food"])  # recalcule si chemin exite
-        print("cheeeeeeeeeeeeeeeeck")
-        print(path)
-        
-        #envoyépath en donné static
+        path = cadjacent(mapdata["map"], mapdata["hill"]) 
+        while path == None: # Si pas de chemin a food
+            mapdata = random_map(int(CONFIG["y"]), int(CONFIG["x"]), 1.0 - float(CONFIG["pObstacle"]), float(CONFIG["pObstacle"])) # recréer map
+            path = cadjacent(mapdata["map"], mapdata["hill"])  # recalcule si chemin exite
     else:
         with open(f'static/worlds/{CONFIG["map"]}') as f:
             mapdata = json.load(f)
 
-    print(mapdata)
     hill = mapdata["hill"]
     espace = mapdata["map"]
-    print("HIIIIIIIL", hill)
+    
     
     ant_array = init_ant(int(CONFIG["nbAnt"]), hill)
-    FOOD = 0
-    COEF = 6
-    tour = 1
-    taux = 0.1
-    pose = 100
+    FOOD = 0 #nombre de food collecté
+    COEF = 6 # Attirance des phéromones
+    tour = 1  # nombre d'ittéraiton de la simulation
+    taux = 0.1 # taux d'évaporation
+    pose = 100 # nombre de phéromones posé
 
     while True:
         for ant in ant_array:
@@ -129,7 +123,7 @@ def generer():
         tour += 1
         data = {
             "ants": ant_array,
-            "map": espace,   # prends espace directement
+            "map": espace,   
             "food": FOOD,
             "tour": tour
         }
@@ -152,7 +146,6 @@ def mapedit():
 
 @app.route("/simulation", methods=['POST'])
 def simulation():
-    print("=====================")
     global CONFIG
     CONFIG = {
     "map": request.form.get('map'),
@@ -162,48 +155,35 @@ def simulation():
     "y": request.form.get('y', 10),
     "x": request.form.get('x', 10),
 }
-    print(CONFIG)
     global path
-    print(path)
     # Chemin vers le fichier map.json
     base_dir = os.path.dirname(os.path.abspath(__file__))
     fichier = os.path.join(base_dir, "static", "worlds", CONFIG["map"])
 
     with open(fichier, "r", encoding="utf-8") as f:
         jsonFile = json.load(f)
-        # short = jsonFile.get("chemin_temoin", [])
-        # print(short)
         CONFIG["path"] = jsonFile.get("chemin_temoin", [])
+        sizeMap = [jsonFile.get("height", []), jsonFile.get("width", [])];
+        
         
     print(CONFIG)
-    return render_template("simulation.html", shortPath=CONFIG["path"])
-
-    # return render_template("simulation.html", shortPath=CONFIG["path"])
+    return render_template("simulation.html", shortPath=CONFIG["path"], size=sizeMap)
 
 
-    # short = jsonFile.get("chemin_temoin", [])
-    # short = json.dumps(short)
-    # CONFIG["path"] = short
-    # print("config path, ", CONFIG["path"])
-    # return render_template("simulation.html", shortPath=CONFIG["path"])
 
 @app.route("/stream")
 def stream():
-    print("STREAM APPELEEEE")
     return Response(generer(), mimetype="text/event-stream")
 
 @app.route("/saveMap", methods=['POST'])
 def saveMap():
     data = request.form.get('mapData')
     data = json.loads(data) #convertir en vrai json car js renvoi string
-    print(data)
     
     short_path_brut = cadjacent(data["map"], data["hill"])
     if short_path_brut != None:
         short_path = trouve(short_path_brut, data["hill"])
         data["short"] = short_path #rajoute chemin le plus court dans la var "json" data
-        print(data["short"])
-        print("heeeeeeeeeerrreeeee")
         ecrire_json(data, data["name"])
     else:
         print("="*20)
@@ -214,7 +194,6 @@ def saveMap():
     #save le sjon dans /static/world et rechargé json_map
     # shortPath = cadjacent(data["map"],data["hill"] )  
     #rajouter shortPath a json
-    print("YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESS")
     
     return render_template('index.html', map=load_json_list())
 

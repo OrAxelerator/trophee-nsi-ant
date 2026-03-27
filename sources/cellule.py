@@ -51,8 +51,6 @@ def get_cellule(world, ant: dict, mode:str) -> list:
                 Read_world.append(read_world(ant, choices[el], world))
                 possibility.append(choices[el])
         
-    print("read read", Read_world)
-    print("possibility",possibility)
 
     if mode == "all" : 
         return allChoice
@@ -71,7 +69,6 @@ def get_cellule(world, ant: dict, mode:str) -> list:
                 coef = 1
 
             for el in possibility :
-                    print("el",el)
                     if (el[coef] == ant["angle"][coef]):
                             choix.append(el)
 

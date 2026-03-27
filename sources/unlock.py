@@ -43,10 +43,10 @@ def unblock(espace, ant):
                     #print("passage")
     
     if res == []:
-        print("demi-tour")
+        # print("demi-tour")
         return (-(angle_before[0]), -(angle_before[1]))
             
-    print("res: ", res)
+    # print("res: ", res)
     phero = []
     angle = []
 
@@ -63,13 +63,13 @@ def unblock(espace, ant):
                 val = 1
             phero.append(val)
             angle = res[phero.index(max(phero))]
-            print("res de la mort, ",angle)
+            # print("res de la mort, ",angle)
             return angle
         
         if ant["have_food"] == False :
             if val == "f":
                 angle.append(val)
-                print("res de la mort 1, ",angle)
+                # print("res de la mort 1, ",angle)
                 return angle
             else :
                 phero.append(val)

@@ -15,6 +15,11 @@ const elem = document.getElementById("inputFile");
 const killBtn = document.getElementById("killMi");
 const minimizeBtn = document.getElementById("minimizeBtn");
 
+const windowEl = document.getElementById("window");
+
+const bubule = document.getElementById("bubbleDeMi");
+const antDiv = document.getElementById("ant");
+
 
 let sizeCellule = Number(sizeInput.value);
 let activeMode = "obstacle";
@@ -22,15 +27,15 @@ let activeMode = "obstacle";
 let leftDown = false;
 let rightDown = false;
 let centerDown = false;
-let cellule 
+let cellule
 
 btn.forEach(el => { //pour tout les btn s'occupe de listener et de l'affichage
     el.addEventListener("click", () => {
         btn.forEach(style => {
-            if (style == el){
+            if (style == el) {
                 el.classList.add("on");
-                activeMode = el.id; 
-            }else {
+                activeMode = el.id;
+            } else {
                 style.classList.remove("on");
             }
         });
@@ -50,8 +55,8 @@ document.addEventListener("wheel", (event) => {
     const up = 5;
     const down = -5;
     const value = (event.deltaY < 0) ? up : down;
-    sizeCellule +=value
-    sizeCellule = Math.max(Math.min(sizeCellule,100 ), 1 );
+    sizeCellule += value
+    sizeCellule = Math.max(Math.min(sizeCellule, 100), 1);
     updateSizeCellule(sizeCellule);
     sizeInput.value = sizeCellule
     console.log(sizeCellule);
@@ -70,12 +75,12 @@ function updateSizeCellule(size) {
 
 function importMap(mapJson) {
     map.innerHTML = ""; // reset map
-    
-    for (let i=0;i < mapJson.height; i++){
+
+    for (let i = 0; i < mapJson.height; i++) {
         row = document.createElement("div");
         row.id = `row${i}`;
         row.className = "row";
-        for (let j = 0; j < mapJson.width; j++){
+        for (let j = 0; j < mapJson.width; j++) {
             let cellule = document.createElement("div");
             cellule.className = "cellule";
             cellule.style.width = `${sizeCellule}px`;
@@ -91,26 +96,26 @@ function importMap(mapJson) {
 
 
 function jsonCelluleToClass(el) {
-    if (typeof el  === "number"){return "path"};
-    if (el === "X"){return "obstacle"};
-    if (el === "h"){return "hill"};
-    if (el === "f"){return "food"};
+    if (typeof el === "number") { return "path" };
+    if (el === "X") { return "obstacle" };
+    if (el === "h") { return "hill" };
+    if (el === "f") { return "food" };
 }
 
 
 
 
-function createMap(y, x){
+function createMap(y, x) {
     map.innerHTML = ""; // reset map
-    if (y == 0 && x == 0 || typeof Number(y) === NaN  || typeof Number(x) === NaN || x === "" || y === ""){ 
+    if (y == 0 && x == 0 || typeof Number(y) === NaN || typeof Number(x) === NaN || x === "" || y === "") {
         x = 10;
         y = 10;
     }
-    for (let i=0;i < y; i++){
+    for (let i = 0; i < y; i++) {
         row = document.createElement("div");
         row.id = `row${i}`;
         row.className = "row";
-        for (let j = 0; j < x; j++){
+        for (let j = 0; j < x; j++) {
             let cellule = document.createElement("div");
             cellule.className = "cellule";
             cellule.style.width = `${sizeCellule}px`;
@@ -123,37 +128,37 @@ function createMap(y, x){
 }
 
 
-function changeCellule(cel, activeMode){
+function changeCellule(cel, activeMode) {
     console.log(cel, "touché");
-    if (activeMode === "obstacle"){
+    if (activeMode === "obstacle") {
         cel.className = 'cellule obstacle'; // met case à "obstacle"
     }
-    if (activeMode === "path"){
+    if (activeMode === "path") {
         cel.className = 'cellule path'; // met case à "path"
     }
-    if (activeMode === "food"){
+    if (activeMode === "food") {
         cel.className = 'cellule food'; // met case à "food"
     }
-    if (activeMode === "hill"){
+    if (activeMode === "hill") {
         cel.className = 'cellule hill'; // met case à "hill"
     }
 }
 
 
 
-function saveMap(){
-    
+function saveMap() {
+
     let have_hill = false;
     let MAP = {
-    "map" : [],
-    "width":"",
-    "height":"",
-    "hill":"",
-    "name":""
+        "map": [],
+        "width": "",
+        "height": "",
+        "hill": "",
+        "name": ""
     };
-    
-    let rows =  map.querySelectorAll(".row");
-    for (let i = 0; i < rows.length; i ++){
+
+    let rows = map.querySelectorAll(".row");
+    for (let i = 0; i < rows.length; i++) {
         //console.log(rows[i]);
         //console.log(rows.length)
         rowsJson = [];
@@ -164,22 +169,22 @@ function saveMap(){
             console.log(cel);
             let value; // valeur a ajouté
             //console.log(cel.classList.value);
-                if (cel.classList.value === "cellule path"){
-                    value = 1;
-                }if (cel.classList.value === "cellule obstacle"){
-                    value = "X";
-                }if (cel.classList.value === "cellule food"){
-                    value = "f";
-                }if (cel.classList.value === "cellule hill" && have_hill === true){
-                    value = 1;
-                }
-                if (cel.classList.value === "cellule hill" && have_hill === false){
-                    value = "h"; // h pour home
-                    MAP["hill"] = [i, j]; // y,x
-                    have_hill = true;
-                }
-                rowsJson.push(value);
-                j += 1;
+            if (cel.classList.value === "cellule path") {
+                value = 1;
+            } if (cel.classList.value === "cellule obstacle") {
+                value = "X";
+            } if (cel.classList.value === "cellule food") {
+                value = "f";
+            } if (cel.classList.value === "cellule hill" && have_hill === true) {
+                value = 1;
+            }
+            if (cel.classList.value === "cellule hill" && have_hill === false) {
+                value = "h"; // h pour home
+                MAP["hill"] = [i, j]; // y,x
+                have_hill = true;
+            }
+            rowsJson.push(value);
+            j += 1;
         })
         MAP["map"].push(rowsJson); // "map" change jamais
     }
@@ -209,7 +214,7 @@ function resetCellListeners() {
                 changeCellule(el, activeMode);
             }
             if (rightDown) {
-                changeCellule(el,"path" ) // met case neutre
+                changeCellule(el, "path") // met case neutre
             }
         });
 
@@ -225,29 +230,27 @@ elem.type = "file";
 let jsonData = null;
 elem.addEventListener("change", async () => {
     console.log("jdpezh");
-if (elem.files.length === 1) {
-    const file = elem.files[0];
-    const text = await file.text();   // lire le fichier
-    jsonData = JSON.parse(text);      // convertir en objet JS
-    console.log(`Map ${jsonData.name} importé`);
+    if (elem.files.length === 1) {
+        const file = elem.files[0];
+        const text = await file.text();   // lire le fichier
+        jsonData = JSON.parse(text);      // convertir en objet JS
+        console.log(`Map ${jsonData.name} importé`);
 
-    importMap(jsonData)
-    resetCellListeners()
+        importMap(jsonData)
+        resetCellListeners()
     }
 });
 
 
 windowsFull = true
-const windowEl = document.getElementById("window");
-console.log(windowEl);
 minimizeBtn.addEventListener("click", () => {
-    let action = windowsFull ?  "translateX(-14em)" : "translateX(1px)"; //condition ? exprSiVrai : exprSiFaux;
-    let ch = windowsFull ? "❯" : "❮" ;
+    let action = windowsFull ? "translateX(-14em)" : "translateX(1px)"; //condition ? exprSiVrai : exprSiFaux;
+    let ch = windowsFull ? "❯" : "❮";
     console.log(action);
     windowEl.style.transform = action;
     minimizeBtn.textContent = ch
     windowsFull = !windowsFull
-    })
+})
 
 
 
@@ -267,7 +270,7 @@ let lastY = 0
 
 
 function getdegreeFromRad(rad) {
-  return rad  * (180/Math.PI)
+    return rad * (180 / Math.PI)
 }
 
 //bloquer clic droit qui affiche menu u navigateur
@@ -278,41 +281,41 @@ document.addEventListener("contextmenu", (event) => {
 
 let antX = 500;
 let antY = 500;
-const bubule = document.getElementById("bubbleDeMi");
 bubule.style.display = "none"; //init
 //33 et 67 sont juste des constantes pour bien cadré la bubule de XXX
 bubule.style.left = antX - 33 + "px";
 bubule.style.top = antY - 67 + "px";
-const antDiv = document.getElementById("ant");
-antDiv.style.left = antX+"px"
-antDiv.style.top = antY+"px"
+
+console.log("Mi : hello :)");
+antDiv.style.left = antX + "px"
+antDiv.style.top = antY + "px"
 let intervalId = null;
 antDiv.style.transform = "rotate(90deg)"
 function moveAnt(x, y) {
-  if (intervalId) clearInterval(intervalId);
-  intervalId = setInterval(() => {
-    let dx = x - antX;
-    let dy = y - antY;
-    let distance = Math.sqrt(dx * dx + dy * dy);
+    if (intervalId) clearInterval(intervalId);
+    intervalId = setInterval(() => {
+        let dx = x - antX;
+        let dy = y - antY;
+        let distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance < 2) {
-      clearInterval(intervalId);
-      return;
-    }
+        if (distance < 2) {
+            clearInterval(intervalId);
+            return;
+        }
 
-    let speed = 3;
-    antX += (dx / distance) * speed;
-    antY += (dy / distance) * speed;
+        let speed = 3;
+        antX += (dx / distance) * speed;
+        antY += (dy / distance) * speed;
 
-    antDiv.style.left = antX + "px";
-    antDiv.style.top = antY + "px";
-    bubule.style.left = antX - 33 + "px";
-    bubule.style.top = antY - 67 +  "px";
-    let rad = Math.atan2(dy, dx);
-    let deg = rad * (180 / Math.PI);
-    deg += 90
-    antDiv.style.transform = "rotate(" + deg + "deg)";
-  }, 16); 
+        antDiv.style.left = antX + "px";
+        antDiv.style.top = antY + "px";
+        bubule.style.left = antX - 33 + "px";
+        bubule.style.top = antY - 67 + "px";
+        let rad = Math.atan2(dy, dx);
+        let deg = rad * (180 / Math.PI);
+        deg += 90
+        antDiv.style.transform = "rotate(" + deg + "deg)";
+    }, 16);
 }
 
 
@@ -323,7 +326,7 @@ antDiv.addEventListener("mouseout", () => {
     bubule.style.display = "none";
 });
 
-killBtn.addEventListener("click" ,() => {
+killBtn.addEventListener("click", () => {
     antDiv.style.display = "none";
     killBtn.remove()
     console.log("Mi est triste :(");
@@ -349,11 +352,12 @@ document.addEventListener("mousedown", (event) => {
             lastY = event.clientY
             let difX = originX - lastX
             let difY = originY - lastY
-            map.style.transform = `translate(${-difX - mapX}px, ${-difY - mapY}px)` }
-            //bouge map de différence entre position de départ et position actuelle
-            // mapX / mapY 
-        document.addEventListener("mousemove", mouve) 
-    }if (event.button === 2) {
+            map.style.transform = `translate(${-difX - mapX}px, ${-difY - mapY}px)`
+        }
+        //bouge map de différence entre position de départ et position actuelle
+        // mapX / mapY 
+        document.addEventListener("mousemove", mouve)
+    } if (event.button === 2) {
         rightDown = true
     }
 })
@@ -362,7 +366,7 @@ document.addEventListener("mouseup", (event) => {
     if (event.button === 0) {
         leftDown = false
         console.log("clic gauche relâché")
-    }if (event.button === 1) {
+    } if (event.button === 1) {
         centerDown = false
         console.log("clic droit relâché")
         map.style.cursor = "cell"
@@ -372,7 +376,7 @@ document.addEventListener("mouseup", (event) => {
         let difY = originY - lastY
         mapX += difX
         mapY += difY
-    }if (event.button === 2) {
+    } if (event.button === 2) {
         rightDown = false
         console.log("clic droit relâché")
     }

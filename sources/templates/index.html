@@ -1,56 +1,58 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <title>Ant Simulation</title>
     <style>
         * {
-    box-sizing: border-box;
-}
+            box-sizing: border-box;
+        }
 
-html,
-body {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #675b40a8;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #675b40a8;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-:root {
-    --main-yellow : #fbea6a;
-    --active-yellow : #FFC53D;
-    --cellule-path-color:  #88D381;
-    --cellule-obstacle-color:   linear-gradient(135deg,
-            rgba(91, 91, 91, 0.94) 0%,
-            rgba(60, 60, 60, 0.94) 50%,
-            rgba(40, 40, 40, 0.94) 100%);
-    --cellule-food-color :radial-gradient(rgb(14, 156, 26) 0%,
-            rgb(50, 129, 8) 60%,
-            rgb(18, 124, 46) 100%);
-    --celleule-hill-color:linear-gradient(to bottom, #B8865B, #8B4513);
-}
-button,
-input {
-    padding: 5px;
-    background-color: var(--active-yellow);
-    border-radius: 10px;
-    cursor: pointer;
-}
+        :root {
+            --main-yellow: #fbea6a;
+            --active-yellow: #FFC53D;
+            --cellule-path-color: #88D381;
+            --cellule-obstacle-color: linear-gradient(135deg,
+                    rgba(91, 91, 91, 0.94) 0%,
+                    rgba(60, 60, 60, 0.94) 50%,
+                    rgba(40, 40, 40, 0.94) 100%);
+            --cellule-food-color: radial-gradient(rgb(14, 156, 26) 0%,
+                    rgb(50, 129, 8) 60%,
+                    rgb(18, 124, 46) 100%);
+            --celleule-hill-color: linear-gradient(to bottom, #B8865B, #8B4513);
+        }
 
-#inputBox {
-    z-index: 3;
-  position: absolute;
-  background-color: var(--main-yellow);
-  padding: 2em;
-  border-radius: 15px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
+        button,
+        input {
+            padding: 5px;
+            background-color: var(--active-yellow);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #inputBox {
+            z-index: 3;
+            position: absolute;
+            background-color: var(--main-yellow);
+            padding: 2em;
+            border-radius: 15px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
 
         .panel {
             margin-bottom: 20px;
@@ -63,44 +65,51 @@ input {
             border: none;
             cursor: pointer;
         }
-        #mapSelect{
+
+        #mapSelect {
             background-color: var(--active-yellow);
             padding: 7px;
             border-radius: 10px;
         }
+
         #mapSelect::file-selector-button {
             background-color: var(--main-yellow);
         }
+
         .active {
-            
+
             text-decoration: underline;
-            background-color:var(--active-yellow);
+            background-color: var(--active-yellow);
             border-bottom: none;
-            
+
             /* de base main-euyloow */
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);        
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
             font-weight: bold;
         }
+
         nav {
             width: 90%;
             margin: 0 auto;
             display: flex;
             flex-direction: row;
         }
-        nav > div {
-            background-color:#ede358; 
+
+        nav>div {
+            background-color: #ede358;
             border: 2px solid black;
             width: 50%;
             margin: 0 auto;
             text-align: center;
             cursor: pointer;
             padding: 0.4em;
-            
+
         }
+
         #presetMapOnglet {
             border-radius: 14px 0px 0px 0px;
             border-right: 1px solid black;
         }
+
         #randomMapOnglet {
             border-radius: 0px 14px 0px 0px;
             border-left: 1px solid black;
@@ -112,166 +121,169 @@ input {
             margin: 0 auto;
             border-radius: 0px 0px 14px 14px;
             border: solid #333 2px;
- 
-        border-top: none;
-        text-align: center;
-        padding-top: 30px;
-        padding-bottom: 40px;
+
+            border-top: none;
+            text-align: center;
+            padding-top: 30px;
+            padding-bottom: 40px;
         }
+
         #titre {
             text-align: center;
         }
+
         #start {
-    background: linear-gradient(135deg, var(--main-yellow),var(--active-yellow));
-    border-radius: 16px;
-    width: 220px;
-    margin: 40px auto 0 auto; 
-    padding: 1.2em 2em;
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    transition: all 0.2s ease;
-}
+            background: linear-gradient(135deg, var(--main-yellow), var(--active-yellow));
+            border-radius: 16px;
+            width: 220px;
+            margin: 40px auto 0 auto;
+            padding: 1.2em 2em;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
 
-#start:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
+        #start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
 
-#start:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
+        #start:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
     </style>
 </head>
+
 <body>
 
-<h1 id="titre">🐜 Simulation Fourmis 🐜</h1>
+    <h1 id="titre">🐜 Simulation Fourmis 🐜</h1>
 
 
 
-<nav>
-    <div class="onglet active" id="presetMapOnglet">
-        Preset map
-    </div>
-    <div class="onglet" id="randomMapOnglet">
-        Random map
-    </div>
-</nav>
+    <nav>
+        <div class="onglet active" id="presetMapOnglet">
+            Preset map
+        </div>
+        <div class="onglet" id="randomMapOnglet">
+            Random map
+        </div>
+    </nav>
 
-<form action="/simulation" method="POST">
+    <form action="/simulation" method="POST">
 
-    <div id="predefOptions" class="panel presetMap">
-        Map:
-        <select id="mapSelect" name="map"></select>
-    </div>
-    <div class="panel presetMap">
-        <p>créer vos propres maps </p>
-        <a href="{{ url_for('mapedit') }}">Aller à l'éditeur</a>
-    </div>
-
-    
-    <div class="panel">
-        Nombre de fourmis:
-        <input id="nb_ant" type="number" value="5" name="nbAnt">
-    </div>
-    
-    <!-- effacé car flaks a besoin  de récuprer valeur depuis un input mais si cette input est affiché inchoérance d'interface alors il y est utilisé par js et utilisatetu le change a travers onglet-->
-    <div style="display:none;">
-Map random ? check = oui
-        <input id="randomMap" type="checkbox"  name="randomMap">
-    </div>
-
-    <div class="panel randomMap" >
-        Pourcentage d'obstacle:
-        <input id="pObstacle" type="range" min="0" max="1" step="0.05"  name="pObstacle">
-    </div>
-
-<div class="panel randomMap">
-        Largeur (X)
-        <input id="x" type="number" min="2"   name="x">
-    </div>
-
-<div class="panel randomMap">
-        Hauteur (Y)
-        <input id="y" type="number" min="2"   name="y">
-    </div>
-    <!-- attribut form pour que btn reste connecté au form meme en dehors -->
-    <input type="submit" value="Soumettre"  id="start" from="simulation"> 
-</form>
+        <div id="predefOptions" class="panel presetMap">
+            Map:
+            <select id="mapSelect" name="map"></select>
+        </div>
+        <div class="panel presetMap">
+            <p>créer vos propres maps </p>
+            <a href="{{ url_for('mapedit') }}">Aller à l'éditeur</a>
+        </div>
 
 
-<hr>
+        <div class="panel">
+            Nombre de fourmis:
+            <input id="nb_ant" type="number" value="5" name="nbAnt">
+        </div>
+
+        <!-- effacé car flaks a besoin  de récuprer valeur depuis un input mais si cette input est affiché inchoérance d'interface alors il y est utilisé par js et utilisatetu le change a travers onglet-->
+        <div style="display:none;">
+            Map random ? check = oui
+            <input id="randomMap" type="checkbox" name="randomMap">
+        </div>
+
+        <div class="panel randomMap">
+            Pourcentage d'obstacle:
+            <input id="pObstacle" type="range" min="0" max="1" step="0.05" name="pObstacle">
+        </div>
+
+        <div class="panel randomMap">
+            Largeur (X)
+            <input id="x" type="number" min="2" name="x">
+        </div>
+
+        <div class="panel randomMap">
+            Hauteur (Y)
+            <input id="y" type="number" min="2" name="y">
+        </div>
+        <!-- attribut form pour que btn reste connecté au form meme en dehors -->
+        <input type="submit" value="Soumettre" id="start" from="simulation">
+    </form>
 
 
-<script>
+    <hr>
 
-const mapJs ={{map | safe}}
-// const mapJs = ["salit", "test"]//{{map | safe}}
-console.log(mapJs);        
-const liste = document.getElementById("liste");
-const mapSelect  = document.getElementById("mapSelect");
-mapJs.forEach(element => {
-    const li = document.createElement("option"); 
-    li.textContent = element;
-    li.style.display = "block";
-    mapSelect.appendChild(li);
-});
-const checkRandomMap = document.getElementById("randomMap");
-const randomMapEl = document.querySelectorAll(".randomMap");
-const presetMapEl = document.querySelectorAll(".presetMap");
 
-function displayRandomMapParam(displayR) {
-    if (displayR) {
-        randomMapEl.forEach(element => {
-            element.style.display = "";
+    <script>
+
+        const mapJs = {{ map | safe}}
+        // const mapJs = ["salit", "test"]//{{map | safe}}
+        console.log(mapJs);
+        const liste = document.getElementById("liste");
+        const mapSelect = document.getElementById("mapSelect");
+        mapJs.forEach(element => {
+            const li = document.createElement("option");
+            li.textContent = element;
+            li.style.display = "block";
+            mapSelect.appendChild(li);
         });
-        presetMapEl.forEach(element => {
-            element.style.display = "none";
-        });
-    
-    } else{
-        randomMapEl.forEach(element => {
-            element.style.display = "none";
-        });
-        presetMapEl.forEach(element => {
-            element.style.display = "";
-        });
-    }
-}
+        const checkRandomMap = document.getElementById("randomMap");
+        const randomMapEl = document.querySelectorAll(".randomMap");
+        const presetMapEl = document.querySelectorAll(".presetMap");
 
+        function displayRandomMapParam(displayR) {
+            if (displayR) {
+                randomMapEl.forEach(element => {
+                    element.style.display = "";
+                });
+                presetMapEl.forEach(element => {
+                    element.style.display = "none";
+                });
 
-
-
-
-const presetMapOnglet = document.getElementById("presetMapOnglet");
-const randomMapOnglet = document.getElementById("randomMapOnglet");
-let activeOnglet = 0
-let onglet = [presetMapOnglet, randomMapOnglet]
-onglet.forEach(element => {
-    element.addEventListener("click", () => {
-        if (String(element.id) === String(onglet[activeOnglet].id)) {
-            //rien ..
-            console.log("riiien ...");
-        }else {
-            console.log("alilleur");
-            activeOnglet = 1 - activeOnglet
-            onglet[activeOnglet].classList.add("active")
-            onglet[1-activeOnglet].classList.remove("active")
-            displayRandomMapParam(Boolean(activeOnglet));
-            checkRandomMap.checked = Boolean(activeOnglet)//change pour py puisse get depuis imput car peut pas juste prendre Boolean(activeOnglet)
+            } else {
+                randomMapEl.forEach(element => {
+                    element.style.display = "none";
+                });
+                presetMapEl.forEach(element => {
+                    element.style.display = "";
+                });
+            }
         }
-    })
-});
 
-displayRandomMapParam(Boolean(activeOnglet));
-// Boolean(0) => false
-// Boolean(1) => true
-</script>
+
+
+
+
+        const presetMapOnglet = document.getElementById("presetMapOnglet");
+        const randomMapOnglet = document.getElementById("randomMapOnglet");
+        let activeOnglet = 0
+        let onglet = [presetMapOnglet, randomMapOnglet]
+        onglet.forEach(element => {
+            element.addEventListener("click", () => {
+                if (String(element.id) === String(onglet[activeOnglet].id)) {
+                    //rien ..
+                    console.log("riiien ...");
+                } else {
+                    console.log("alilleur");
+                    activeOnglet = 1 - activeOnglet
+                    onglet[activeOnglet].classList.add("active")
+                    onglet[1 - activeOnglet].classList.remove("active")
+                    displayRandomMapParam(Boolean(activeOnglet));
+                    checkRandomMap.checked = Boolean(activeOnglet)//change pour py puisse get depuis imput car peut pas juste prendre Boolean(activeOnglet)
+                }
+            })
+        });
+
+        displayRandomMapParam(Boolean(activeOnglet));
+        // Boolean(0) => false
+        // Boolean(1) => true
+    </script>
 
 </body>
+
 </html>

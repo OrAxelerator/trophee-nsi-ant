@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Création de map - trophee nsi ant</title>
-    <link rel="stylesheet"href="{{ url_for('static', filename='editor/mapedit.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='editor/mapedit.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='assets/iconEditor.png') }}">
 </head>
+
 <body>
 
-<div id="ant">𖢥</div>
-<span class="bubble" id="bubbleDeMi">Hello :)</span>
+    <div id="ant">𖢥</div>
+    <span class="bubble" id="bubbleDeMi">Hello :)</span>
 
-<!-- 🐜 -->
+    <!-- 🐜 -->
 
-<header id="window">
-    <button class="toggle-btn" id="minimizeBtn">❮</button> 
+    <header id="window">
+        <button class="toggle-btn" id="minimizeBtn">❮</button>
 
         <div class="section">
             <input type="file" id="inputFile" accept=".json">
@@ -31,45 +33,48 @@
             <input type="range" id="size" value="50" min="1" max="100">
         </div>
 
-    <div class="sidbareElement">
+        <div class="sidbareElement">
 
-        <div class="section tools">
-            <button id="obstacle" class="on">🪨 Obstacle</button>
-            <button id="path">🧹 Erase</button>
-            <button id="food">🌱 Food</button>
-            <button id="hill">🏠 Hill</button>
+            <div class="section tools">
+                <button id="obstacle" class="on">🪨 Obstacle</button>
+                <button id="path">🧹 Erase</button>
+                <button id="food">🌱 Food</button>
+                <button id="hill">🏠 Hill</button>
+            </div>
+
+            <div class="controls">
+                <p><strong>Contrôles :</strong></p>
+                <p> Clic gauche : peindre</p>
+                <p> Clic droit : effacer</p>
+                <p>Clic molette : se déplacer</p>
+                <p>Molette : zoom map</p>
+            </div>
+            <div class="section">
+                <form action="/saveMap" method="POST">
+                    <button id="save" type="submit">💾 Save</button>
+                    <!-- cacher car sert juste a passer variable js a flask -->
+                    <input id="mapData" style="display: none;" name="mapData">
+                </form>
+            </div>
+
         </div>
-
-        <div class="controls">
-    <p><strong>Contrôles :</strong></p>
-    <p> Clic gauche : peindre</p>
-    <p> Clic droit : effacer</p>
-    <p>Clic molette : se déplacer</p>
-    <p>Molette : zoom map</p>
-    </div>
         <div class="section">
-            <form action="/saveMap" method="POST">
-                <button id="save" type="submit">💾 Save</button>
-                <!-- cacher car sert juste a passer variable js a flask -->
-                <input id="mapData" style="display: none;" name="mapData">
-            </form>
+            <a href="/">⬅ Retour accueil</a>
         </div>
 
-    </div>
+        <div class="section">
+            <button id="killMi">Désactiver 🐜</button>
+        </div>
 
-    <div class="section">
-        <button id="killMi">Désactiver 🐜</button>
-    </div>
-    
-    
-</header>
-<main id="main">
-    <div id="map">
-    </div>
-</main>
+    </header>
+    <main id="main">
+        <div id="map">
+        </div>
+    </main>
 
-<script src="{{ url_for('static', filename='editor/mapedit.js') }}"></script>
+    <script src="{{ url_for('static', filename='editor/mapedit.js') }}"></script>
 
 
 </body>
+
 </html>

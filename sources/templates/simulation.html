@@ -1,76 +1,87 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Simulation</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
+
 <body>
 
 
-<style>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-            * {
-    box-sizing: border-box;
-}
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #675b40a8;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-html,
-body {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #675b40a8;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
+        :root {
+            --main-yellow: #fbea6a;
+            --active-yellow: #FFC53D;
+            --cellule-path-color: #88D381;
+            --cellule-obstacle-color: linear-gradient(135deg,
+                    rgba(91, 91, 91, 0.94) 0%,
+                    rgba(60, 60, 60, 0.94) 50%,
+                    rgba(40, 40, 40, 0.94) 100%);
+            --cellule-food-color: radial-gradient(rgb(14, 156, 26) 0%,
+                    rgb(50, 129, 8) 60%,
+                    rgb(18, 124, 46) 100%);
+            --celleule-hill-color: linear-gradient(to bottom, #B8865B, #8B4513);
+        }
 
-:root {
-    --main-yellow : #fbea6a;
-    --active-yellow : #FFC53D;
-    --cellule-path-color:  #88D381;
-    --cellule-obstacle-color:   linear-gradient(135deg,
-            rgba(91, 91, 91, 0.94) 0%,
-            rgba(60, 60, 60, 0.94) 50%,
-            rgba(40, 40, 40, 0.94) 100%);
-    --cellule-food-color :radial-gradient(rgb(14, 156, 26) 0%,
-            rgb(50, 129, 8) 60%,
-            rgb(18, 124, 46) 100%);
-    --celleule-hill-color:linear-gradient(to bottom, #B8865B, #8B4513);
-}
-    #titre {
+        #titre {
             text-align: center;
         }
 
-        #mapCanvas {
+        #mapCanvas,
+        #pathCanvas {
             width: fit-content;
+            position: absolute;
+        }
+
+        #pathCanvas {
+            z-index: 2;
         }
 
         #window {
-    background-color: var(--active-yellow);
-    display: flex;
-    flex-direction: column;
-    height: 100dvh;
-    width: 14em;
-    padding: 0.5em 1em 1em 1em; /* top right bottom left */
-    position: absolute;
-    top: 0;
-    border-radius: 0px 20px 20px 10px;
-    transition: 0.6s all ease;
-}
-.toggle-btn {
-    position: absolute;
-    top: 50dvh;
-    right:-1em;
-    transform: translateY(-50%);
+            background-color: var(--active-yellow);
+            display: flex;
+            flex-direction: column;
+            height: 100dvh;
+            width: 14em;
+            padding: 0.5em 1em 1em 1em;
+            /* top right bottom left */
+            position: absolute;
+            top: 0;
+            border-radius: 0px 20px 20px 10px;
+            transition: 0.6s all ease;
+            z-index: 3;
+        }
 
-    width: 50px;
-    height: 90px;
+        .toggle-btn {
+            position: absolute;
+            top: 50dvh;
+            right: -1em;
+            transform: translateY(-50%);
 
-    border-top-right-radius: 25px;
-    border-bottom-right-radius: 25px;
-    border: none;
-    overflow: hidden; 
-}
+            width: 50px;
+            height: 90px;
+
+            border-top-right-radius: 25px;
+            border-bottom-right-radius: 25px;
+            border: none;
+            overflow: hidden;
+        }
 
 
         #minimizeBtn {
@@ -78,213 +89,298 @@ body {
             cursor: pointer;
             font-size: 3em;
         }
+
         #minimizeBtn:hover {
             background-color: var(--main-yellow);
         }
-        
-</style>
 
-<h1 id="titre">🐜 Simulation Fourmis 🐜</h1>
+        .controls {
+            margin-top: auto;
+            /* pousse en bas */
+            padding: 10px;
+            font-size: 0.9em;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
 
+        .controls p {
+            margin: 3px 0;
+        }
 
+        .controls strong {
+            display: block;
+            margin-bottom: 5px;
+        }
 
-<br><br>
+        .inputText {
+            text-align: center;
+        }
+    </style>
 
-<!-- <canvas id="mapCanvas"></canvas> -->
-<canvas id="mapCanvas"></canvas>
-
-<header id="window">
-    <h2>Données :</h2>
-    <div id="liste"></div>
-    <div>
-        <p>Chemin le plus court : </p>
-        <div id="path"></div>
-    </div>
-    <h2>Option :</h2>
-    <input type="range" id="size" value="50" min="1" max="100">
-    <a href="/">⬅ Retour accueil</a>
-     <button class="toggle-btn" id="minimizeBtn">❮</button>
-    
-</header>
-
-<script>
-    const shortPath = {{shortPath | tojson}};
-    // const tableau = JSON.parse(shortPath);//car str
-    // console.log(tableau);
-    console.log(shortPath);
-    
-    const eventSource = new EventSource("/stream");
-    const path = document.getElementById("path");
-    path.textContent = shortPath.length
-    const canvas = document.getElementById("mapCanvas");
-    const ctx = canvas.getContext("2d");
-    const minimizeBtn = document.getElementById("minimizeBtn");
-    const sizeInput = document.getElementById("size");
-    let cellSize = 40;
-
-    
-    
-
-    const colors = {
-        "X": "#aaaaaa",
-        1: "#00cc00",
-        "f": "#ff0000",
-        "h":"#B8865B"
-    };
-    eventSource.onmessage = function(event) {
-        const data = JSON.parse(event.data);
-        // console.log(data);
-        drawMap(data.map);
-        drawAnts(data.ants);
-
-        document.getElementById("liste").textContent =
-            "Tour: " + data.tour + " | Food: " + data.food;
-    };
-
-    function color(number) {
-        let l = 90 - Math.log10(number + 1) * 30;
-        l = Math.max(35, l);
-        return `hsl(120, 100%, ${l}%)`;
-    }
+    <h1 id="titre">🐜 Simulation Fourmis 🐜</h1>
 
 
-    function drawMap(mapData) {
-        // canvas.clearRect(0, 0, canvas.width, canvas.height);
-        canvas.width = mapData[0].length * cellSize;
-        canvas.height = mapData.length * cellSize;
 
-        for (let y = 0; y < mapData.length; y++) {
-            for (let x = 0; x < mapData[y].length; x++) {
-                // const keys = Object.keys(colors);
-                // console.log(keys);
-                if (typeof mapData[y][x] === "number") {
-                    ctx.fillStyle = color(mapData[y][x]);
-                }else {
-                    // console.log(typeof mapData[y][x]);
-                    ctx.fillStyle = colors[mapData[y][x]];
+    <br><br>
+
+    <canvas id="pathCanvas"></canvas>
+    <canvas id="mapCanvas"></canvas>
+
+    <header id="window">
+        <h2>Données :</h2>
+        <div id="liste"></div>
+        <div>
+            <div id="path">Chemin le plus court : </div>
+        </div>
+        <h2>Option :</h2>
+        <p class="inputText">zoom</p>
+        <input type="range" id="size" value="50" min="1" max="100">
+        <hr style="width: 100%;">
+        <p class="inputText">opacité du chemin le plus court</p>
+        <input type="range" id="opacityPath" value="100" min="0" max="100">
+
+        <hr style="width: 100%;">
+        <a href="/">Retour accueil</a>
+
+        <div class="controls">
+            <p><strong>Case :</strong></p>
+            <p><span style="display:inline-block;width:12px;height:12px;background:#88D381;margin-right:5px;"></span>:
+                Case libre</p>
+            <p><span
+                    style="display:inline-block;width:12px;height:12px;background:rgb(14, 156, 26);margin-right:5px;"></span>:
+                Phéromones</p>
+            <p><span style="display:inline-block;width:12px;height:12px;background:red;margin-right:5px;"></span>:
+                Nourriture</p>
+            <p><span
+                    style="display:inline-block;width:12px;height:12px;background:rgb(169, 169, 169);margin-right:5px;"></span>:
+                Obstacle</p>
+            <p><span style="display:inline-block;width:12px;height:12px;background:#eb985d;margin-right:5px;"></span>:
+                Fourmilière</p>
+            <p><span style="display:inline-block;width:12px;height:12px;background:#ff50ff;margin-right:5px;"></span>:
+                Chemin le plus court</p>
+        </div>
+
+
+        <div class="controls">
+            <p><strong>Contrôles :</strong></p>
+            <p>Clic molette : se déplacer</p>
+            <p>Molette : zoom map</p>
+        </div>
+
+
+        <button class="toggle-btn" id="minimizeBtn">❮</button>
+
+    </header>
+
+    <script>
+        const shortPath = {{ shortPath | tojson}};
+
+        const size = {{ size | tojson}}; //[height, width] de la map pour drawpath()
+        console.log(size);
+        console.log(shortPath);
+        const canvasPath = document.getElementById("pathCanvas");
+        const inputPathOpacity = document.getElementById("opacityPath");
+        const eventSource = new EventSource("/stream");
+        const path = document.getElementById("path");
+        path.textContent += shortPath.length
+        const canvas = document.getElementById("mapCanvas");
+        const ctx = canvas.getContext("2d");
+        const ctxpath = canvasPath.getContext("2d");
+        const minimizeBtn = document.getElementById("minimizeBtn");
+        const sizeInput = document.getElementById("size");
+        let cellSize = 40;
+
+
+
+        const colors = {
+            "X": "#aaaaaa",
+            1: "#00cc00",
+            "f": "#ff0000",
+            "h": "#B8865B"
+        };
+        eventSource.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            drawMap(data.map);
+            drawAnts(data.ants);
+
+            document.getElementById("liste").textContent =
+                "Tour: " + data.tour + " | Food: " + data.food;
+
+
+        };
+        inputPathOpacity.addEventListener("input", () => {
+            // let pathOpacity = Number();
+            drawPath(inputPathOpacity.value, shortPath);
+            console.log(pathOpacity);
+        })
+
+        function color(number) {
+            let l = 90 - Math.log10(number + 1) * 30;
+            l = Math.max(35, l);
+            return `hsl(120, 100%, ${l}%)`;
+        }
+        drawPath(inputPathOpacity.value, shortPath); //init
+        function drawPath(opacity, data) {
+            console.log('DRAW PATH');
+            // conversion 
+            opacity = Number(opacity) / 100;
+
+            canvasPath.width = size[0] * sizeInput.value;
+            canvasPath.height = size[1] * sizeInput.value;
+
+            ctxpath.clearRect(0, 0, canvasPath.width, canvasPath.height);
+
+            data.forEach(ant => {
+
+                if (ant === "f") {
+                    return; // on ignore le dernier
                 }
-                
+
+                const x = ant[1] * cellSize;
+                const y = ant[0] * cellSize;
+                //#FF3DD1
+                ctxpath.fillStyle = `rgba(255, 60, 209, ${opacity})`;
                 ctx.strokeStyle = "#000000";
-                ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                // ctx.fillText("S", 100, 100)marche pas ... bug
+                ctxpath.fillRect(x, y, cellSize, cellSize);
+            });
+        }
+
+
+        function drawMap(mapData) {
+            // canvas.clearRect(0, 0, canvas.width, canvas.height);
+            let canvaHeight = mapData.length * cellSize;
+            let canvaWidth = mapData[0].length * cellSize;
+            canvas.width = canvaWidth;
+            canvas.height = canvaHeight;
+
+            for (let y = 0; y < mapData.length; y++) {
+                for (let x = 0; x < mapData[y].length; x++) {
+                    // const keys = Object.keys(colors);
+                    // console.log(keys);
+                    if (typeof mapData[y][x] === "number") {
+                        ctx.fillStyle = color(mapData[y][x]);
+                    } else {
+                        // console.log(typeof mapData[y][x]);
+                        ctx.fillStyle = colors[mapData[y][x]];
+                    }
+
+                    ctx.strokeStyle = "#000000";
+                    ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    // ctx.fillText("S", 100, 100)marche pas ... bug
+                }
             }
         }
-    }
 
 
-    function drawAnts(ants) {
-        ants.forEach(ant => {
-            const x = ant.pos[1] * cellSize;
-            const y = ant.pos[0] * cellSize;
-            if (ant.have_food) {
-                ctx.fillStyle = "red";
-            }else {
-                ctx.fillStyle = "orange";
+        function drawAnts(ants) {
+            ants.forEach(ant => {
+                const x = ant.pos[1] * cellSize;
+                const y = ant.pos[0] * cellSize;
+                if (ant.have_food) {
+                    ctx.fillStyle = "red";
+                } else {
+                    ctx.fillStyle = "orange";
+                }
+
+                ctx.beginPath();
+                ctx.arc(x + cellSize / 2, y + cellSize / 2, 8, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        }
+
+        windowsFull = true
+        const windowEl = document.getElementById("window");
+
+
+        minimizeBtn.addEventListener("click", () => {
+            let action = windowsFull ? "translateX(-14em)" : "translateX(1px)"; //condition ? exprSiVrai : exprSiFaux;
+            let ch = windowsFull ? "❯" : "❮";
+            console.log(action);
+            windowEl.style.transform = action;
+            minimizeBtn.textContent = ch
+            windowsFull = !windowsFull
+        })
+
+
+
+
+
+
+        sizeInput.addEventListener("input", () => {
+            console.log(`size : ${sizeInput.value}`);
+            cellSize = Number(sizeInput.value);
+            drawPath(inputPathOpacity.value, shortPath)
+
+        })
+
+        let mouve = null
+
+        let mapX = 0
+        let mapY = 0
+
+        let originX = 0
+        let originY = 0
+
+        let lastX = 0
+        let lastY = 0
+
+        document.addEventListener("mousedown", (event) => {
+
+            if (event.button === 1) {
+                centerDown = true;
+                document.body.style.cursor = "grabbing"
+                console.log("clic droit enfoncé")
+                // position curseur quand clic enfoncé
+                originX = event.clientX
+                originY = event.clientY
+
+                mouve = function (event) {
+                    lastX = event.clientX
+                    lastY = event.clientY
+                    let difX = originX - lastX
+                    let difY = originY - lastY
+                    canvasPath.style.transform = `translate(${-difX - mapX}px, ${-difY - mapY}px)`
+                    canvas.style.transform = `translate(${-difX - mapX}px, ${-difY - mapY}px)`
+                }
+                //bouge map de différence entre position de départ et position actuelle
+                // mapX / mapY 
+                document.addEventListener("mousemove", mouve)
+            } if (event.button === 2) {
+                rightDown = true
             }
-            
-            ctx.beginPath();
-            ctx.arc(x + cellSize/2, y + cellSize/2, 8, 0, 2 * Math.PI);
-            ctx.fill();
+        })
+
+        document.addEventListener("mouseup", (event) => {
+            if (event.button === 1) {
+                centerDown = false
+                console.log("clic droit relâché")
+                document.body.style.cursor = "auto"
+                document.removeEventListener("mousemove", mouve)
+                let difX = originX - lastX
+                let difY = originY - lastY
+                mapX += difX
+                mapY += difY
+            } if (event.button === 2) {
+                rightDown = false
+                console.log("clic droit relâché")
+            }
+        })
+
+
+
+        document.addEventListener("wheel", (event) => {
+            const up = 5;
+            const down = -5;
+            const value = (event.deltaY < 0) ? up : down;
+            cellSize += value
+            cellSize = Math.max(Math.min(cellSize, 100), 1);
+
+            sizeInput.value = cellSize
         });
-    }
 
-windowsFull = true
-const windowEl = document.getElementById("window");
-
-
-minimizeBtn.addEventListener("click", () => {
-    let action = windowsFull ?  "translateX(-14em)" : "translateX(1px)"; //condition ? exprSiVrai : exprSiFaux;
-    let ch = windowsFull ? "❯" : "❮" ;
-    console.log(action);
-    windowEl.style.transform = action;
-    minimizeBtn.textContent = ch
-    windowsFull = !windowsFull
-    })
-
-
-
-
-
-
-sizeInput.addEventListener("input", () => {
-    console.log(`size : ${sizeInput.value}`);
-    cellSize = Number(sizeInput.value);
-    console.log(cellSize);
-    drawMap(MAP)
-})
-
-let mouve = null
-
-let mapX = 0
-let mapY = 0
-
-let originX = 0
-let originY = 0
-
-let lastX = 0
-let lastY = 0
-
-document.addEventListener("mousedown", (event) => {
-    if (event.button === 0) {
-        leftDown = true
-        console.log("clic gauche enfoncé")
-        // moveAnt(event.clientX, event.clientY)
-    }
-    if (event.button === 1) {
-        centerDown = true;
-        document.body.style.cursor = "grabbing"
-        console.log("clic droit enfoncé")
-        // position curseur quand clic enfoncé
-        originX = event.clientX
-        originY = event.clientY
-
-        mouve = function (event) {
-            lastX = event.clientX
-            lastY = event.clientY
-            let difX = originX - lastX
-            let difY = originY - lastY
-            canvas.style.transform = `translate(${-difX - mapX}px, ${-difY - mapY}px)` }
-            //bouge map de différence entre position de départ et position actuelle
-            // mapX / mapY 
-        document.addEventListener("mousemove", mouve) 
-    }if (event.button === 2) {
-        rightDown = true
-    }
-})
-
-document.addEventListener("mouseup", (event) => {
-    if (event.button === 0) {
-        leftDown = false
-        console.log("clic gauche relâché")
-    }if (event.button === 1) {
-        centerDown = false
-        console.log("clic droit relâché")
-        document.body.style.cursor = "auto"
-        document.removeEventListener("mousemove", mouve)
-        let difX = originX - lastX
-        let difY = originY - lastY
-        mapX += difX
-        mapY += difY
-    }if (event.button === 2) {
-        rightDown = false
-        console.log("clic droit relâché")
-    }
-})
-
-
-
-document.addEventListener("wheel", (event) => {
-    const up = 5;
-    const down = -5;
-    const value = (event.deltaY < 0) ? up : down;
-    cellSize +=value
-    cellSize = Math.max(Math.min(cellSize,100 ), 1 );
-    
-    sizeInput.value = cellSize
-});
-
-</script>
+    </script>
 
 </body>
+
 </html>
