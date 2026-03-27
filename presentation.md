@@ -19,8 +19,9 @@ L’objectif du projet est de mettre des fourmis dans un environnement fermé (u
 
 * **role :**<br>
 - Aélys : créer fonction backhome permettant aux fourmis de rentrer vers la fourmilière en s'aidant avec les produits scalaires etc
-- Anatole : gérer systeme de path findings A* pour check map
-- Axel : site web editeur de map
+- Anatole : gérer systeme de path findings A* pour check map, [voir doc](/docs/doc_path_finding.md)
+- Axel : gestion de l'inerface/infrastructure flask ([index](/templates/index.html), [mapEditor](/templates/mapedit.html), [simulation](/templates/simulation.html), [app.py](/app.py))
+- Abdelhalim : creation de la fonction evaporation permettant l'evaporation des pheromones pendant la simulation (evap.py), creation de la fonction center emoji pour center emoji emojis dans la grille lors  de l'affichage dans le terminal, centrage de l'afichage dans le terminal + couleurs pour mieux afficher la quantité de pheromones dans le terminal avec l'utilisation de colorama (draw.py)
 
 ---
 

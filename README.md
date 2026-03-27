@@ -1,7 +1,7 @@
 # Trophee-NSI-ant
 
 ### Pour commencer
-Ce projet vise à simuler les `déplacements` des fourmies d'une colonie pour trouver leur ``nourriture`` par le biais de ``phéromones`` laissées sur leur passage.
+PHÉROMONES est une démonstration de résolution de problème inspirée d’un mécanisme naturel : le déplacement des fourmis dans la nature. Les fourmis partent d’un point, « la fourmilière », et doivent trouver un autre point, « la nourriture », sans la moindre aide, à part une : les phéromones, créées par elles-mêmes durant leur recherche. À travers de multiples espaces, au fil du temps, les fourmis trouvent un chemin de plus en plus court pour se nourrir en toute autonomie.
 
 ### Instalation
 ```
@@ -13,50 +13,28 @@ Pour lancer le projet il faut allez dans le dossier ``trophee_nsi_ant``
 ```
 cd trophee_nsi_ant
 ```
-et installez la librairie ``colorama``
+et installez la librairie ``Flask``
 ```
 pip install -r requirements.txt 
 ```
-et executé  le ficher ``python`` init.py
+et executé  la commande ``flask run --port=8080``
+puis allez en local hsot au port 8080
+> http://127.0.0.1:8080
 
 ### Fabriqer avec :
-* python (pour la logique) et libraire colorama
-* html, css, js (pour le [site](https://oraxelerator.github.io/trophee_nsi_ant/tools/index.html))
+* python (pour la logique) et libraire Flask
+* html, css, js (pour la partie graphique)
 * json (pour les maps)
-
-
 
 
 ### License 
 Le projet est sous license **GNU** - voir le fichier [LICENSE](/LICENSE.md) pour plus d'informations.
 
 
+### Autre :
+- Ce projet a utilisé de l'ia [voir plus](/ia.md)
+- présentation plus détaillée du projet [voir plus](/presentation.md)
 
+### Logo :
 
----
-
-
-
-
-
-
-
-
-Ce projet vise à simuler les `déplacements` des fourmies d'une colonie pour trouver leur ``nourriture`` par le biais de ``phéromones`` laissées sur leur passage.
-
-On retrouve différents ``fichiers sources`` :
-- [``main``](main.py) : le fichier d'entrée du programme
-- [``get-cellule``](cellule.py): permettant de voir les possibilités de déplacement d'une fourmi
-- [``draw``](draw.py) : permettant un affichage épuré
-- [``move``](main.py) : fichier qui simule les déplacements aléatoires des fourmies sur la map choisie
-- [``food``](food.py) : avec juste la position d'une fourmi et ces déplacement possible elle detecte si elle à accès a de la nourriture ("f")
-
-## Processus de la simulation 
-Vous disposez de `plusieurs maps `monde à votre guise, à vous de choisir celle qui vous convient selon leur `typographie` que ce soit par rapports aux obstacles qu'elle présente, la taille de la carte etc... 
-
-Les fourmies commencent la simulation en sortant de leur fourmilière. Elles ont alors la possiblité des créer des chemins pour 
-
----
-
-Créer votre propre map depuis ce site : 
-https://oraxelerator.github.io/trophee-nsi-ant/tools/index.html
+![](/favicon.png    ) 
