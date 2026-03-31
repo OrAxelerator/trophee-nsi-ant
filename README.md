@@ -36,9 +36,10 @@ Le projet est sous license **GNU** - voir le fichier [LICENSE](/LICENSE.md) pour
 
 
 ### Autre :
-- Ce projet a utilisé de l'ia [voir plus](/ia.md)
-- présentation plus détaillée du projet [voir plus](/presentation.md)
-- explication de la logique principale du projet [voir plus](/docs/doc_main.md)
+- Ce projet a utilisé de l'ia [voir plus](/docs/ia.md)
+- Présentation plus détaillée du projet [voir plus](/presentation.md)
+- Explication de la logique principale du projet [voir plus](/docs/doc_main.md)
+- Explication de la fonction ``get_cellule()`` [voir plus](/docs/doc_get_cellule.md)
 
 ### Logo :
 
